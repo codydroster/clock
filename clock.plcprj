@@ -23,7 +23,7 @@
 					<program>Pick_SEQ</program>
 					<program>Place_SEQ</program>
 					<program>Push_Seq</program>
-					<program>Lase_Seq</program>
+					<program>Laser_Seq</program>
 				</task>
 				<task name="Init">
 					<program>init</program>
@@ -48,6 +48,11 @@
 					</var>
 					<var name="placeIndex" type="INT"/>
 					<var name="placeSeq" type="BOOL"/>
+					<var name="laserSeq" type="INT"/>
+					<var name="pickPositionX" type="INT">
+						<initValue>8550</initValue>
+					</var>
+					<var name="Ztop" type="BOOL"/>
 				</group>
 				<group name="I_O_mappings_DIO" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
 					<var name="laser" type="BOOL"/>
@@ -1511,37 +1516,162 @@
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Lase_Seq" version="1.0.0" creationDate="1696631258" lastModifiedDate="1696648690" excludeFromBuild="TRUE" excludeFromBuildIfNotDef="">
+				<program name="Laser_Seq" version="1.0.0" creationDate="1696631258" lastModifiedDate="1697166974" excludeFromBuild="TRUE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="cnt0" type="CTD"/>
+							<var name="Xoffset" type="INT"/>
+							<var name="Yoffset" type="INT"/>
+							<var name="Zoffset" type="INT"/>
 						</localVars>
 					</vars>
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
 						<LD2 version="1">
-							<network label="" id="1" nextID="3" comment="" disabled="false" disableCondition="">
+							<network label="" id="1" nextID="92" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
-										<funcBlock name="CTD" id="2" instance="cnt0">
+										<funcBlock name="StepperSEQ" id="67" instance="step2">
 											<inputs>
-												<pin name="CD" neg="false" type="BOOL">
-													<contact name="?" type="Normal" id="0"/>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="87">
+																	<contact name="auto" type="Normal" id="88"/>
+																	<contact name="laserSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="CurSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="10" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
 												</pin>
-												<pin name="LD" neg="false" type="BOOL"/>
-												<pin name="PV" neg="false" type="INT"/>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="CurSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<expression name="pickPositionX + Xoffset" id="90"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<expression name="pickPositionsY + Yoffset" id="85"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="Ztop" id="91"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
 											</inputs>
 											<outputs>
-												<pin name="Q" neg="false" type="BOOL">
+												<pin name="ENO" neg="false" type="BOOL">
 													<outputLine/>
 												</pin>
-												<pin name="CV" neg="false" type="INT"/>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="CurSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
 											</outputs>
 										</funcBlock>
 									</input>
-									<outputs>
-										<coil name="?" type="Normal" id="1"/>
-									</outputs>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="2" nextID="92" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="87">
+																	<contact name="auto" type="Normal" id="88"/>
+																	<contact name="laserSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="CurSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="20" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="CurSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<expression name="pickPositionX + Xoffset" id="90"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<expression name="pickPositionsY + Yoffset" id="85"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="Ztop" id="91"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="CurSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
 								</assignment>
 							</network>
 						</LD2>
@@ -7873,7 +8003,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="1150">
+			<root name="clock" nextID="1283">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
@@ -7886,7 +8016,7 @@ END_VAR
 				<Pou name="StepperMAN" id="618"/>
 				<Pou name="Place_SEQ" id="903"/>
 				<Pou name="Push_Seq" id="904"/>
-				<Pou name="Lase_Seq" id="905"/>
+				<Pou name="Laser_Seq" id="905"/>
 			</root>
 		</workspace>
 	</sources>
