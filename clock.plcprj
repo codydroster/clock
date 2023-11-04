@@ -20,11 +20,15 @@
 			<tasks>
 				<task name="Fast">
 					<program>main</program>
+					<program>Sched</program>
+					<program>Engrave_SEQ</program>
+					<program>Cut_SEQ</program>
 					<program>Pick_SEQ</program>
 					<program>Place_SEQ</program>
-					<program>Push_Seq</program>
-					<program>Laser_Seq</program>
-					<program>Sched</program>
+					<program>Push_SEQ</program>
+				</task>
+				<task name="Slow">
+					<program>TimeGetter</program>
 				</task>
 				<task name="Init">
 					<program>init</program>
@@ -36,7 +40,7 @@
 					<var name="pickSeq" type="BOOL">
 						<initValue>0</initValue>
 					</var>
-					<var name="CurSeq" type="INT">
+					<var name="curSeq" type="INT">
 						<initValue>10</initValue>
 					</var>
 					<var name="auto" type="BOOL"/>
@@ -45,21 +49,69 @@
 						<initValue>0</initValue>
 					</var>
 					<var name="placePositionsY" type="INT" dim0="4">
-						<initValue>[6950, 9950, 13650, 16400]</initValue>
+						<initValue>[7200, 10200, 13650, 16650]</initValue>
 					</var>
 					<var name="placeIndex" type="INT"/>
 					<var name="placeSeq" type="BOOL"/>
 					<var name="laserSeq" type="INT"/>
 					<var name="pickPositionX" type="INT">
-						<initValue>7900</initValue>
+						<initValue>7950</initValue>
 					</var>
-					<var name="Ztop" type="BOOL"/>
 					<var name="placeClearZ" type="INT">
-						<initValue>13500</initValue>
+						<initValue>13600</initValue>
 					</var>
+					<var name="workDone" type="BOOL">
+						<initValue>0</initValue>
+					</var>
+					<var name="pushSeq" type="BOOL"/>
+					<var name="cutPositionsY" type="INT" dim0="10">
+						<initValue>[21000, 19000, 17000, 15000, 13000, 11000, 9000, 7000, 5000, 3000]</initValue>
+					</var>
+					<var name="cutBackX" type="INT">
+						<initValue>15500</initValue>
+					</var>
+					<var name="cutFrontX" type="INT">
+						<initValue>18500</initValue>
+					</var>
+					<var name="cutSeq" type="BOOL">
+						<initValue>0</initValue>
+					</var>
+					<var name="moveSpeed" type="INT">
+						<initValue>375</initValue>
+					</var>
+					<var name="min0" type="INT">
+						<initValue>0</initValue>
+					</var>
+					<var name="min1" type="INT">
+						<initValue>0</initValue>
+					</var>
+					<var name="hour0" type="INT">
+						<initValue>0</initValue>
+					</var>
+					<var name="hour1" type="INT">
+						<initValue>0</initValue>
+					</var>
+					<var name="placedCur" type="INT" dim0="4"/>
+					<var name="timeReal" type="INT" dim0="4"/>
+					<var name="timeRTC" type="INT" dim0="4"/>
+					<var name="Solenoids" type="BOOL" dim0="4">
+						<address type="M" typeVar="X" index="3" subIndex="4"/>
+					</var>
+					<var name="cutDigit" type="INT"/>
 				</group>
 				<group name="I_O_mappings_DIO" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
-					<var name="laser" type="BOOL"/>
+					<var name="Sol0" type="BOOL">
+						<address type="M" typeVar="X" index="3" subIndex="0"/>
+					</var>
+					<var name="Sol1" type="BOOL">
+						<address type="M" typeVar="X" index="3" subIndex="1"/>
+					</var>
+					<var name="Sol2" type="BOOL">
+						<address type="M" typeVar="X" index="3" subIndex="2"/>
+					</var>
+					<var name="Sol3" type="BOOL">
+						<address type="M" typeVar="X" index="3" subIndex="3"/>
+					</var>
 				</group>
 				<group name="I_O_mappings_DI" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
 					<var name="XHome" type="BOOL">
@@ -77,9 +129,6 @@
 				</group>
 				<group name="I_O_mappings_AO" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
 					<var name="laserPWM" type="REAL">
-						<address type="Q" typeVar="D" index="1" subIndex="0"/>
-					</var>
-					<var name="laser2" type="REAL">
 						<address type="Q" typeVar="D" index="1" subIndex="1"/>
 					</var>
 				</group>
@@ -87,6 +136,9 @@
 			<retainVars/>
 			<constantVars>
 				<group name="Global_vars" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
+					<const name="ZTop" type="INT">
+						<initValue>15000</initValue>
+					</const>
 					<const name="XOFF" type="INT">
 						<initValue>0</initValue>
 					</const>
@@ -96,17 +148,20 @@
 					<const name="ZOFF" type="INT">
 						<initValue>0</initValue>
 					</const>
-					<const name="pickPositionsY" type="INT" dim0="11">
-						<initValue>[23100, 21100, 19100, 17100, 15100, 13100, 11100, 9100, 7100, 5100, 3100]</initValue>
+					<const name="pickPositionsY" type="INT" dim0="10">
+						<initValue>[20900, 18900, 16900, 14900, 12900, 10900, 8900, 6900, 4900, 2900]</initValue>
 					</const>
 					<const name="pickClearanceZ" type="INT">
 						<initValue>10000</initValue>
 					</const>
 					<const name="placePositionX" type="INT">
-						<initValue>19350</initValue>
+						<initValue>19300</initValue>
 					</const>
 					<const name="PBTimeOff" type="INT">
 						<initValue>200</initValue>
+					</const>
+					<const name="pushClearanceX" type="INT">
+						<initValue>16350</initValue>
 					</const>
 				</group>
 			</constantVars>
@@ -123,10 +178,10 @@
 				<group name="I_O_mappings_DO">
 					<iecDeclaration active="FALSE"/>
 				</group>
-				<group name="Ungrouped_vars">
+				<group name="I_O_mappings_AO">
 					<iecDeclaration active="FALSE"/>
 				</group>
-				<group name="I_O_mappings_AO">
+				<group name="Ungrouped_vars">
 					<iecDeclaration active="FALSE"/>
 				</group>
 			</iecVarsDeclaration>
@@ -408,12 +463,10 @@
 				</functionBlock>
 			</functionBlocks>
 			<programs>
-				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1697807148" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1698593648" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="home_tim" type="TON"/>
-							<var name="man0" type="StepperMAN"/>
-							<var name="test" type="BOOL"/>
 							<var name="ZPosInit" type="INT">
 								<initValue>12000</initValue>
 							</var>
@@ -429,7 +482,6 @@
 							<var name="place" type="INT">
 								<initValue>2</initValue>
 							</var>
-							<var name="start" type="BOOL"/>
 							<var name="XSpeedInit" type="INT">
 								<initValue>750</initValue>
 							</var>
@@ -439,8 +491,11 @@
 							<var name="ZSpeedInit" type="INT">
 								<initValue>400</initValue>
 							</var>
-							<var name="laserPWM" type="REAL">
+							<var name="APosInit" type="INT">
 								<initValue>0</initValue>
+							</var>
+							<var name="ASpeedInit" type="INT">
+								<initValue>200</initValue>
 							</var>
 						</localVars>
 					</vars>
@@ -482,7 +537,7 @@
 									</outputs>
 								</assignment>
 							</network>
-							<network label="" id="3" nextID="36" comment="" disabled="false" disableCondition="">
+							<network label="" id="3" nextID="41" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<contact name="manMode" type="Normal" id="2"/>
@@ -554,8 +609,29 @@
 									</input>
 									<outputs/>
 								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="38">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="APosInit" id="39"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="APos" id="40"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
 							</network>
-							<network label="" id="4" nextID="18" comment="" disabled="false" disableCondition="">
+							<network label="" id="4" nextID="23" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<contact name="manMode" type="Normal" id="0"/>
@@ -570,7 +646,7 @@
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="0" neg="false" type="UNDEF">
-													<var name="XSpeedInit" id="10"/>
+													<var name="moveSpeed" id="10"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -591,7 +667,7 @@
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="0" neg="false" type="UNDEF">
-													<var name="YSpeedInit" id="13"/>
+													<var name="moveSpeed" id="13"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -612,7 +688,7 @@
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="0" neg="false" type="UNDEF">
-													<var name="ZSpeedInit" id="16"/>
+													<var name="moveSpeed" id="16"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -627,15 +703,13 @@
 									</input>
 									<outputs/>
 								</assignment>
-							</network>
-							<network label="" id="5" nextID="7" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
+								<assignment fromTmpVar="2">
 									<input>
-										<operator name="MOVE" id="2">
+										<operator name="MOVE" id="20">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="0" neg="false" type="UNDEF">
-													<var name="pick" id="6"/>
+													<var name="ASpeedInit" id="21"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -643,51 +717,18 @@
 													<outputLine/>
 												</pin>
 												<pin name="1" neg="false" type="UNDEF">
-													<var name="pickIndex" id="4"/>
+													<var name="ASpeed" id="22"/>
 												</pin>
 											</outputs>
 										</operator>
 									</input>
 									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="6" nextID="5" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<operator name="MOVE" id="2">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="UNDEF">
-													<var name="place" id="3"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="placeIndex" id="4"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="7" nextID="5" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<contact name="start" type="Normal" id="2"/>
-									</input>
-									<outputs>
-										<coil name="pickSeq" type="Set" id="4"/>
-									</outputs>
 								</assignment>
 							</network>
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="init" version="1.0.0" creationDate="1696287024" lastModifiedDate="1697770364" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="init" version="1.0.0" creationDate="1696287024" lastModifiedDate="1698279554" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="XSpeedInit" type="INT">
@@ -699,20 +740,15 @@
 							<var name="ZSpeedInit" type="INT">
 								<initValue>200</initValue>
 							</var>
+							<var name="ASpeedInit" type="INT">
+								<initValue>200</initValue>
+							</var>
 						</localVars>
 					</vars>
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
 						<LD2 version="1">
-							<network label="" id="1" nextID="3" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input/>
-									<outputs>
-										<coil name="Home" type="Normal" id="2"/>
-									</outputs>
-								</assignment>
-							</network>
-							<network label="" id="2" nextID="10" comment="" disabled="false" disableCondition="">
+							<network label="" id="1" nextID="10" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="MOVE" id="2">
@@ -735,7 +771,7 @@
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="3" nextID="13" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="13" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="MOVE" id="2">
@@ -758,7 +794,7 @@
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="15" comment="" disabled="false" disableCondition="">
+							<network label="" id="3" nextID="15" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="MOVE" id="2">
@@ -781,10 +817,133 @@
 									<outputs/>
 								</assignment>
 							</network>
+							<network label="" id="4" nextID="5" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="ASpeedInit" id="3"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="ASpeed" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="5" nextID="6" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="-1" id="5"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="placedCur[0]" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="6" nextID="6" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="-1" id="5"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="placedCur[1]" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="7" nextID="6" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="-1" id="5"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="placedCur[2]" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="8" nextID="6" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="-1" id="5"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="placedCur[3]" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="9" nextID="3" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input/>
+									<outputs>
+										<coil name="Home" type="Normal" id="2"/>
+									</outputs>
+								</assignment>
+							</network>
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Pick_SEQ" version="1.0.0" creationDate="1696460819" lastModifiedDate="1697771521" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Pick_SEQ" version="1.0.0" creationDate="1696460819" lastModifiedDate="1698194610" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="POS0" type="INT">
@@ -800,13 +959,15 @@
 							<var name="step1" type="StepperSEQ"/>
 							<var name="step2" type="StepperSEQ"/>
 							<var name="step3" type="StepperSEQ"/>
-							<var name="done" type="BOOL"/>
+							<var name="pickOffsetY" type="INT">
+								<initValue>2100</initValue>
+							</var>
 						</localVars>
 					</vars>
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
 						<LD2 version="1">
-							<network label="" id="1" nextID="98" comment="" disabled="false" disableCondition="">
+							<network label="" id="1" nextID="99" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="67" instance="step0">
@@ -821,7 +982,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="10" id="63"/>
@@ -836,16 +997,16 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="pickPositionX" id="97"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<var name="pickPositionsY[pickIndex]" id="89"/>
+													<expression name="pickPositionsY[pickIndex] + pickOffsetY" id="98"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
-													<var name="pickClearanceZ" id="90"/>
+													<var name="ZTop" id="90"/>
 												</pin>
 												<pin name="XPOSACT" neg="false" type="INT">
 													<var name="XPosAct" id="80"/>
@@ -862,7 +1023,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -879,7 +1040,7 @@
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="2" nextID="92" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="93" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="67" instance="step1">
@@ -894,7 +1055,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="20" id="63"/>
@@ -909,13 +1070,13 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="pickPositionX" id="91"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<var name="pickPositionsY[pickIndex]" id="83"/>
+													<expression name="pickPositionsY[pickIndex] + pickOffsetY" id="92"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<const name="0" id="79"/>
@@ -935,7 +1096,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -952,7 +1113,7 @@
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="3" nextID="90" comment="" disabled="false" disableCondition="">
+							<network label="" id="3" nextID="91" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="67" instance="step2">
@@ -967,7 +1128,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="30" id="63"/>
@@ -982,13 +1143,13 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="pickPositionX" id="89"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="pickPositionsY[pickIndex +1]" id="85"/>
+													<var name="pickPositionsY[pickIndex]" id="90"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<const name="0" id="79"/>
@@ -1008,7 +1169,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1025,7 +1186,7 @@
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="90" comment="" disabled="false" disableCondition="">
+							<network label="" id="4" nextID="91" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="67" instance="step3">
@@ -1040,7 +1201,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="40" id="63"/>
@@ -1055,13 +1216,13 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="pickPositionX" id="88"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="pickPositionsY[pickIndex+1]" id="83"/>
+													<var name="pickPositionsY[pickIndex]" id="90"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="pickClearanceZ" id="89"/>
@@ -1081,7 +1242,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1110,7 +1271,7 @@
 													</and>
 												</pin>
 												<pin name="0" neg="false" type="UNDEF">
-													<var name="CurSeq" id="24"/>
+													<var name="curSeq" id="24"/>
 												</pin>
 												<pin name="1" neg="false" type="UNDEF">
 													<const name="50" id="27"/>
@@ -1121,7 +1282,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="2" neg="false" type="BOOL">
-													<var name="done" id="37"/>
+													<var name="workDone" id="37"/>
 												</pin>
 											</outputs>
 										</operator>
@@ -1129,65 +1290,24 @@
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="6" nextID="28" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<and id="20">
-											<contact name="auto" type="Normal" id="17"/>
-											<contact name="pickSeq" type="Normal" id="15"/>
-											<contact name="done" type="Normal" id="2"/>
-										</and>
-									</input>
-									<outputs>
-										<tmpVar id="21"/>
-									</outputs>
-								</assignment>
-								<assignment fromTmpVar="21">
-									<input>
-										<operator name="MOVE" id="4">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="UNDEF">
-													<const name="10" id="7"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="CurSeq" id="6"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-								<assignment fromTmpVar="21">
-									<input/>
-									<outputs>
-										<coil name="placeSeq" type="Set" id="25"/>
-									</outputs>
-								</assignment>
-							</network>
-							<network label="" id="7" nextID="8" comment="" disabled="false" disableCondition="">
+							<network label="" id="6" nextID="8" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<and id="6">
 											<contact name="auto" type="Normal" id="7"/>
 											<contact name="pickSeq" type="Normal" id="5"/>
-											<contact name="done" type="Closed" id="0"/>
+											<contact name="workDone" type="Normal" id="2"/>
 										</and>
 									</input>
 									<outputs>
-										<coil name="pickSeq" type="Normal" id="2"/>
+										<coil name="pickSeq" type="Reset" id="4"/>
 									</outputs>
 								</assignment>
 							</network>
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Place_SEQ" version="1.0.0" creationDate="1696631228" lastModifiedDate="1697773030" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Place_SEQ" version="1.0.0" creationDate="1696631228" lastModifiedDate="1698600615" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="pushClearanceX" type="INT">
@@ -1205,6 +1325,11 @@
 							<var name="step3" type="StepperSEQ"/>
 							<var name="step4" type="StepperSEQ"/>
 						</localVars>
+						<localConsts>
+							<const name="placeOffsetY" type="INT">
+								<initValue>2100</initValue>
+							</const>
+						</localConsts>
 					</vars>
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
@@ -1224,7 +1349,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="10" id="63"/>
@@ -1239,7 +1364,7 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="placePositionX" id="94"/>
@@ -1265,7 +1390,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1297,7 +1422,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="20" id="63"/>
@@ -1312,7 +1437,7 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="placePositionX" id="94"/>
@@ -1338,7 +1463,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1370,7 +1495,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="30" id="63"/>
@@ -1385,13 +1510,13 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="placePositionX" id="95"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="placePositionsY[placeIndex+1]" id="97"/>
+													<expression name="placePositionsY[placeIndex] + placeOffsetY" id="97"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="placeHeight" id="90"/>
@@ -1411,7 +1536,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1443,7 +1568,7 @@
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="40" id="63"/>
@@ -1458,13 +1583,13 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="placePositionX" id="95"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="placePositionsY[placeIndex+1]" id="98"/>
+													<expression name="placePositionsY[placeIndex] + placeOffsetY" id="98"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="placeClearZ" id="96"/>
@@ -1484,7 +1609,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1501,10 +1626,55 @@
 									<outputs/>
 								</assignment>
 							</network>
+							<network label="" id="5" nextID="38" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="EQ" id="23">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="19">
+														<contact name="auto" type="Normal" id="17"/>
+														<contact name="placeSeq" type="Normal" id="18"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="curSeq" id="24"/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<const name="50" id="27"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="2" neg="false" type="BOOL">
+													<var name="workDone" id="37"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="6" nextID="8" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<and id="6">
+											<contact name="auto" type="Normal" id="7"/>
+											<contact name="placeSeq" type="Normal" id="5"/>
+											<contact name="workDone" type="Normal" id="2"/>
+										</and>
+									</input>
+									<outputs>
+										<coil name="placeSeq" type="Reset" id="4"/>
+									</outputs>
+								</assignment>
+							</network>
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Push_Seq" version="1.0.0" creationDate="1696631246" lastModifiedDate="1697153319" excludeFromBuild="TRUE" excludeFromBuildIfNotDef="">
+				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1698588697" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="step0" type="StepperSEQ"/>
@@ -1514,15 +1684,19 @@
 							<var name="step4" type="StepperSEQ"/>
 							<var name="step5" type="StepperSEQ"/>
 							<var name="step6" type="StepperSEQ"/>
+							<var name="solTim" type="TON"/>
+							<var name="solDur" type="INT">
+								<initValue>2000</initValue>
+							</var>
 						</localVars>
 					</vars>
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
 						<LD2 version="1">
-							<network label="" id="1" nextID="97" comment="" disabled="false" disableCondition="">
+							<network label="" id="1" nextID="99" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
-										<funcBlock name="StepperSEQ" id="67" instance="step4">
+										<funcBlock name="StepperSEQ" id="67" instance="step0">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL">
 													<operator name="EQ" id="59">
@@ -1530,14 +1704,14 @@
 															<pin name="EN" neg="false" type="BOOL">
 																<and id="94">
 																	<contact name="auto" type="Normal" id="95"/>
-																	<contact name="placeSeq" type="Normal" id="20"/>
+																	<contact name="pushSeq" type="Normal" id="20"/>
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
-																<const name="50" id="63"/>
+																<const name="10" id="63"/>
 															</pin>
 														</inputs>
 														<outputs>
@@ -1549,13 +1723,13 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
 													<var name="pushClearanceX" id="92"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<var name="placePositionsY[placeIndex]" id="96"/>
+													<var name="placePositionsY[placeIndex]" id="98"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="placeClearZ" id="90"/>
@@ -1575,7 +1749,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1592,120 +1766,22 @@
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="2" nextID="2" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="102" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
-										<contact name="?" type="Normal" id="0"/>
-									</input>
-									<outputs>
-										<coil name="?" type="Normal" id="1"/>
-									</outputs>
-								</assignment>
-							</network>
-						</LD2>
-					</sourceCode>
-				</program>
-				<program name="Laser_Seq" version="1.0.0" creationDate="1696631258" lastModifiedDate="1697166974" excludeFromBuild="TRUE" excludeFromBuildIfNotDef="">
-					<vars>
-						<localVars>
-							<var name="cnt0" type="CTD"/>
-							<var name="Xoffset" type="INT"/>
-							<var name="Yoffset" type="INT"/>
-							<var name="Zoffset" type="INT"/>
-						</localVars>
-					</vars>
-					<iecDeclaration active="FALSE"/>
-					<sourceCode type="LD2">
-						<LD2 version="1">
-							<network label="" id="1" nextID="92" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<funcBlock name="StepperSEQ" id="67" instance="step2">
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL">
 													<operator name="EQ" id="59">
 														<inputs>
 															<pin name="EN" neg="false" type="BOOL">
-																<and id="87">
-																	<contact name="auto" type="Normal" id="88"/>
-																	<contact name="laserSeq" type="Normal" id="20"/>
+																<and id="94">
+																	<contact name="auto" type="Normal" id="95"/>
+																	<contact name="pushSeq" type="Normal" id="20"/>
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
-															</pin>
-															<pin name="1" neg="false" type="UNDEF">
-																<const name="10" id="63"/>
-															</pin>
-														</inputs>
-														<outputs>
-															<pin name="ENO" neg="false" type="BOOL"/>
-															<pin name="2" neg="false" type="BOOL">
-																<outputLine/>
-															</pin>
-														</outputs>
-													</operator>
-												</pin>
-												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
-												</pin>
-												<pin name="XPOSIN" neg="false" type="INT">
-													<expression name="pickPositionX + Xoffset" id="90"/>
-												</pin>
-												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="pickPositionsY + Yoffset" id="85"/>
-												</pin>
-												<pin name="ZPOSIN" neg="false" type="INT">
-													<var name="Ztop" id="91"/>
-												</pin>
-												<pin name="XPOSACT" neg="false" type="INT">
-													<var name="XPosAct" id="80"/>
-												</pin>
-												<pin name="YPOSACT" neg="false" type="INT">
-													<var name="YPosAct" id="81"/>
-												</pin>
-												<pin name="ZPOSACT" neg="false" type="INT">
-													<var name="ZPosAct" id="82"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
-												</pin>
-												<pin name="XPOSOUT" neg="false" type="INT">
-													<var name="XPos" id="71"/>
-												</pin>
-												<pin name="YPOSOUT" neg="false" type="INT">
-													<var name="YPos" id="72"/>
-												</pin>
-												<pin name="ZPOSOUT" neg="false" type="INT">
-													<var name="ZPos" id="73"/>
-												</pin>
-											</outputs>
-										</funcBlock>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="2" nextID="92" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<funcBlock name="StepperSEQ" id="67" instance="step2">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL">
-													<operator name="EQ" id="59">
-														<inputs>
-															<pin name="EN" neg="false" type="BOOL">
-																<and id="87">
-																	<contact name="auto" type="Normal" id="88"/>
-																	<contact name="laserSeq" type="Normal" id="20"/>
-																</and>
-															</pin>
-															<pin name="0" neg="false" type="UNDEF">
-																<var name="CurSeq" id="60"/>
+																<var name="curSeq" id="60"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<const name="20" id="63"/>
@@ -1720,16 +1796,16 @@
 													</operator>
 												</pin>
 												<pin name="SEQCUR$in" neg="false" type="INT">
-													<var name="CurSeq" id="69"/>
+													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
-													<expression name="pickPositionX + Xoffset" id="90"/>
+													<var name="pushClearanceX" id="101"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="pickPositionsY + Yoffset" id="85"/>
+													<var name="placePositionsY[placeIndex]" id="98"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
-													<var name="Ztop" id="91"/>
+													<const name="12000" id="99"/>
 												</pin>
 												<pin name="XPOSACT" neg="false" type="INT">
 													<var name="XPosAct" id="80"/>
@@ -1746,7 +1822,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="SEQCUR$out" neg="false" type="INT">
-													<var name="CurSeq" id="70"/>
+													<var name="curSeq" id="70"/>
 												</pin>
 												<pin name="XPOSOUT" neg="false" type="INT">
 													<var name="XPos" id="71"/>
@@ -1763,10 +1839,1112 @@
 									<outputs/>
 								</assignment>
 							</network>
+							<network label="" id="3" nextID="101" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="94">
+																	<contact name="auto" type="Normal" id="95"/>
+																	<contact name="pushSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="30" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<const name="17100" id="100"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<var name="placePositionsY[placeIndex]" id="98"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<const name="12000" id="99"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="4" nextID="101" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="94">
+																	<contact name="auto" type="Normal" id="95"/>
+																	<contact name="pushSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="40" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<const name="17050" id="100"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<var name="placePositionsY[placeIndex]" id="98"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<const name="9500" id="99"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="5" nextID="101" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="94">
+																	<contact name="auto" type="Normal" id="95"/>
+																	<contact name="pushSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="50" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<const name="17300" id="100"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<var name="placePositionsY[placeIndex]" id="98"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<const name="9500" id="99"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="6" nextID="102" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="94">
+																	<contact name="auto" type="Normal" id="95"/>
+																	<contact name="pushSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="60" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<const name="17300" id="100"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<var name="placePositionsY[placeIndex]" id="98"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="placeClearZ" id="101"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="7" nextID="108" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="EQ" id="59">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="94">
+														<contact name="auto" type="Normal" id="95"/>
+														<contact name="pushSeq" type="Normal" id="20"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="curSeq" id="60"/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<const name="70" id="63"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL"/>
+												<pin name="2" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs>
+										<tmpVar id="105"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="105">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<const name="19800" id="100"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<var name="placePositionsY[placeIndex]" id="98"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="ZTop" id="101"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="105">
+									<input/>
+									<outputs>
+										<coil name="Solenoids[placeIndex]" type="Normal" id="107"/>
+									</outputs>
+								</assignment>
+							</network>
+							<network label="" id="8" nextID="103" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="94">
+																	<contact name="auto" type="Normal" id="95"/>
+																	<contact name="pushSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="80" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<var name="pushClearanceX" id="102"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<var name="placePositionsY[placeIndex]" id="98"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="ZTop" id="101"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="9" nextID="38" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="EQ" id="23">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="19">
+														<contact name="auto" type="Normal" id="17"/>
+														<contact name="pushSeq" type="Normal" id="18"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="curSeq" id="24"/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<const name="90" id="27"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="2" neg="false" type="BOOL">
+													<var name="workDone" id="37"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="10" nextID="31" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<and id="6">
+											<contact name="auto" type="Normal" id="7"/>
+											<contact name="pushSeq" type="Normal" id="5"/>
+											<contact name="workDone" type="Positive" id="2"/>
+										</and>
+									</input>
+									<outputs>
+										<coil name="pushSeq" type="Reset" id="4"/>
+										<tmpVar id="8"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="11">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="cutDigit" id="12"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="placedCur[placeIndex]" id="13"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="16">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="10" id="17"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="18"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input/>
+									<outputs>
+										<coil name="cutSeq" type="Set" id="21"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="ADD" id="24">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="">
+													<const name="1" id="29"/>
+												</pin>
+												<pin name="1" neg="false" type="">
+													<var name="pickIndex" id="30"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="2" neg="false" type="">
+													<var name="pickIndex" id="27"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="11" nextID="15" comment="" disabled="true" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<and id="6">
+											<contact name="auto" type="Normal" id="7"/>
+											<contact name="pushSeq" type="Normal" id="5"/>
+											<contact name="workDone" type="Normal" id="2"/>
+										</and>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Sched" version="1.0.0" creationDate="1697805682" lastModifiedDate="1697807288" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1698366296" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+					<vars>
+						<localVars>
+							<var name="cnt0" type="CTD"/>
+							<var name="Xoffset" type="INT"/>
+							<var name="Yoffset" type="INT"/>
+							<var name="Zoffset" type="INT"/>
+							<var name="laserPWR" type="REAL"/>
+							<var name="cutSpeed" type="INT">
+								<initValue>1000</initValue>
+							</var>
+							<var name="step0" type="StepperSEQ"/>
+							<var name="step1" type="StepperSEQ"/>
+							<var name="step2" type="StepperSEQ"/>
+						</localVars>
+					</vars>
+					<iecDeclaration active="FALSE"/>
+					<sourceCode type="LD2">
+						<LD2 version="1">
+							<network label="" id="1" nextID="15" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="10">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="11">
+														<contact name="auto" type="Normal" id="0"/>
+														<contact name="cutSeq" type="Positive" id="2"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="">
+													<var name="timeRTC[placeIndex]" id="12"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="">
+													<var name="cutDigit" id="14"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="2" nextID="62" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="GT" id="30">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="26">
+														<contact name="auto" type="Normal" id="0"/>
+														<contact name="cutSeq" type="Normal" id="23"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="curSeq" id="31"/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<const name="10" id="34"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL"/>
+												<pin name="2" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs>
+										<tmpVar id="56"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="56">
+									<input>
+										<operator name="MOVE" id="51">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="cutSpeed" id="53"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="XSpeed" id="54"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="56">
+									<input>
+										<operator name="MOVE" id="59">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="cutSpeed" id="60"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="YSpeed" id="61"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="3" nextID="62" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="59">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="GT" id="30">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="26">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="cutSeq" type="Normal" id="23"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="31"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="10" id="34"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="laserPWR" id="60"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="laserPWM" id="61"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="4" nextID="63" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="59">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="GT" id="30">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="26">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="cutSeq" type="Normal" id="23"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="31"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="30" id="34"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="0.0" id="62"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="laserPWM" id="61"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="5" nextID="94" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step0">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="87">
+																	<contact name="auto" type="Normal" id="88"/>
+																	<contact name="cutSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="10" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<var name="cutBackX" id="92"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="93"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="ZTop" id="91"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="6" nextID="95" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="87">
+																	<contact name="auto" type="Normal" id="88"/>
+																	<contact name="cutSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="20" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<var name="cutBackX" id="92"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<expression name="cutPositionsY[pickIndex+1]" id="94"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="ZTop" id="91"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="7" nextID="95" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="StepperSEQ" id="67" instance="step2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="59">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="87">
+																	<contact name="auto" type="Normal" id="88"/>
+																	<contact name="cutSeq" type="Normal" id="20"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="curSeq" id="60"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="30" id="63"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="SEQCUR$in" neg="false" type="INT">
+													<var name="curSeq" id="69"/>
+												</pin>
+												<pin name="XPOSIN" neg="false" type="INT">
+													<var name="cutFrontX" id="92"/>
+												</pin>
+												<pin name="YPOSIN" neg="false" type="INT">
+													<expression name="cutPositionsY[pickIndex+1]" id="94"/>
+												</pin>
+												<pin name="ZPOSIN" neg="false" type="INT">
+													<var name="ZTop" id="91"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="80"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="81"/>
+												</pin>
+												<pin name="ZPOSACT" neg="false" type="INT">
+													<var name="ZPosAct" id="82"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="SEQCUR$out" neg="false" type="INT">
+													<var name="curSeq" id="70"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="71"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="72"/>
+												</pin>
+												<pin name="ZPOSOUT" neg="false" type="INT">
+													<var name="ZPos" id="73"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="8" nextID="38" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="EQ" id="23">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="19">
+														<contact name="auto" type="Normal" id="17"/>
+														<contact name="cutSeq" type="Normal" id="18"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="curSeq" id="24"/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<const name="40" id="27"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="2" neg="false" type="BOOL">
+													<var name="workDone" id="37"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="9" nextID="20" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<and id="18">
+											<contact name="auto" type="Normal" id="2"/>
+											<contact name="cutSeq" type="Normal" id="17"/>
+											<contact name="workDone" type="Normal" id="19"/>
+										</and>
+									</input>
+									<outputs>
+										<coil name="cutSeq" type="Reset" id="4"/>
+										<tmpVar id="5"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="5">
+									<input>
+										<operator name="MOVE" id="8">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="moveSpeed" id="9"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="XSpeed" id="10"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="5">
+									<input>
+										<operator name="MOVE" id="13">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="moveSpeed" id="14"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="YSpeed" id="15"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+						</LD2>
+					</sourceCode>
+				</program>
+				<program name="Sched" version="1.0.0" creationDate="1697805682" lastModifiedDate="1698588519" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="START_PB" type="BOOL"/>
@@ -1801,7 +2979,265 @@
 									</outputs>
 								</assignment>
 							</network>
+							<network label="" id="2" nextID="5" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<contact name="START_PB" type="Normal" id="0"/>
+									</input>
+									<outputs>
+										<coil name="auto" type="Set" id="1"/>
+										<coil name="cutSeq" type="Set" id="4"/>
+									</outputs>
+								</assignment>
+							</network>
+							<network label="" id="3" nextID="12" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<contact name="cutSeq" type="Negative" id="0"/>
+									</input>
+									<outputs>
+										<tmpVar id="8"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="10" id="3"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input/>
+									<outputs>
+										<coil name="pickSeq" type="Set" id="11"/>
+									</outputs>
+								</assignment>
+							</network>
+							<network label="" id="4" nextID="12" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<contact name="pickSeq" type="Negative" id="0"/>
+									</input>
+									<outputs>
+										<tmpVar id="8"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="10" id="3"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input/>
+									<outputs>
+										<coil name="placeSeq" type="Set" id="11"/>
+									</outputs>
+								</assignment>
+							</network>
+							<network label="" id="5" nextID="12" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<contact name="placeSeq" type="Negative" id="0"/>
+									</input>
+									<outputs>
+										<tmpVar id="8"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="10" id="3"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input/>
+									<outputs>
+										<coil name="pushSeq" type="Set" id="11"/>
+									</outputs>
+								</assignment>
+							</network>
+							<network label="" id="6" nextID="29" comment="" disabled="true" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<and id="6">
+											<contact name="auto" type="Normal" id="7"/>
+											<contact name="pushSeq" type="Normal" id="5"/>
+											<contact name="workDone" type="Normal" id="2"/>
+										</and>
+									</input>
+									<outputs>
+										<coil name="pushSeq" type="Reset" id="4"/>
+										<tmpVar id="8"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="11">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="cutDigit" id="12"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="placedCur[placeIndex]" id="13"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="16">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="10" id="17"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="18"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input/>
+									<outputs>
+										<coil name="cutSeq" type="Set" id="21"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="ADD" id="24">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="pickIndex" id="25"/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<const name="1" id="28"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="2" neg="false" type="UNDEF">
+													<var name="pickIndex" id="27"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
 						</LD2>
+					</sourceCode>
+				</program>
+				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1698190524" excludeFromBuild="TRUE" excludeFromBuildIfNotDef="">
+					<vars/>
+					<iecDeclaration active="FALSE"/>
+					<sourceCode type="LD2">
+						<LD2 version="1">
+							<network label="" id="1" nextID="2" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<contact name="?" type="Normal" id="0"/>
+									</input>
+									<outputs>
+										<coil name="?" type="Normal" id="1"/>
+									</outputs>
+								</assignment>
+							</network>
+						</LD2>
+					</sourceCode>
+				</program>
+				<program name="TimeGetter" version="1.0.0" creationDate="1698276742" lastModifiedDate="1699042353" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+					<vars/>
+					<iecDeclaration active="FALSE"/>
+					<sourceCode type="ST">
+						<![CDATA[
+timeRTC[0] := minute MOD 10;
+timeRTC[1] := minute / 10;
+
+timeRTC[2] := hour MOD 10;
+timeRTC[3] := hour / 10;
+
+/* placedCur[3] is hour1 and also most significant.
+If time changes, reset placedCur[x] to -1 and drop piece. */
+IF(placedCur[3] = -1) THEN
+	placeIndex := 3;
+
+ELSIF(placedCur[2] = -1) THEN
+	placeIndex := 2;
+
+ELSIF(placedCur[1] = -1) THEN
+	placeIndex := 1;
+	
+ELSIF(placedCur[0] = -1) THEN
+	placeIndex := 0;
+
+END_IF;
+
+//set placedCur[x] to -1 when time changes, and not in motion.
+]]>
 					</sourceCode>
 				</program>
 			</programs>
@@ -8062,7 +9498,7 @@ END_VAR
 	warningsKiller := sysCfgAIs(0);
 
 	/* ------	CONFIGURATION OF EACH ANALOG OUPUT	--------	*/
-	warningsKiller := sysCfgAO(0, 5);
+	warningsKiller := sysCfgAO(0, 0);
 	warningsKiller := sysCfgAO(1, 0);
 	warningsKiller := sysCfgAO(2, 0);
 	warningsKiller := sysCfgAO(3, 0);
@@ -8071,10 +9507,10 @@ END_VAR
 	warningsKiller := sysCfgProgDIOs(0);
 
 	/* ------	CONFIGURATION OF EACH PROGRAMMABLE DIGITAL I/O	--------	*/
-	warningsKiller := sysCfgProgDIO(0, 0);
-	warningsKiller := sysCfgProgDIO(1, 0);
-	warningsKiller := sysCfgProgDIO(2, 0);
-	warningsKiller := sysCfgProgDIO(3, 0);
+	warningsKiller := sysCfgProgDIO(0, 2);
+	warningsKiller := sysCfgProgDIO(1, 2);
+	warningsKiller := sysCfgProgDIO(2, 2);
+	warningsKiller := sysCfgProgDIO(3, 2);
 	warningsKiller := sysCfgProgDIO(4, 0);
 	warningsKiller := sysCfgProgDIO(5, 0);
 	warningsKiller := sysCfgProgDIO(6, 0);
@@ -8104,6 +9540,12 @@ XPosAct AT %IB4.0 : INT;
 YPosAct AT %IB4.2 : INT;
 { G: "INPUTS" }
 ZPosAct AT %IB4.4 : INT;
+{ G: "INPUTS" }
+hour AT %IB4.6 : INT;
+{ G: "INPUTS" }
+minute AT %IB4.8 : INT;
+{ G: "INPUTS" }
+second AT %IB4.10 : INT;
 { G: "OUTPUTS" }
 XDir AT %QB4.0 : BOOL;
 { G: "OUTPUTS" }
@@ -8124,13 +9566,19 @@ ZSpeed AT %QB4.14 : INT;
 ZPos AT %QB4.16 : INT;
 { G: "OUTPUTS" }
 Home AT %QB4.18 : BOOL;
+{ G: "OUTPUTS" }
+ADir AT %QB4.20 : INT;
+{ G: "OUTPUTS" }
+ASpeed AT %QB4.22 : INT;
+{ G: "OUTPUTS" }
+APos AT %QB4.24 : INT;
 END_VAR
 
 ]]>
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="1641">
+			<root name="clock" nextID="3037">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
@@ -8142,10 +9590,12 @@ END_VAR
 				<Pou name="Pick_SEQ" id="503"/>
 				<Pou name="StepperMAN" id="618"/>
 				<Pou name="Place_SEQ" id="903"/>
-				<Pou name="Push_Seq" id="904"/>
-				<Pou name="Laser_Seq" id="905"/>
+				<Pou name="Push_SEQ" id="904"/>
+				<Pou name="Cut_SEQ" id="905"/>
 				<GlobalVars name="I_O_mappings_AO" id="1403"/>
 				<Pou name="Sched" id="1605"/>
+				<Pou name="Engrave_SEQ" id="1903"/>
+				<Pou name="TimeGetter" id="2138"/>
 			</root>
 		</workspace>
 	</sources>
@@ -8243,11 +9693,11 @@ END_VAR
 							</ioMapping>
 						</ioMappings_AI>
 						<ioMappings_AO>
-							<ioMapping id="0" period="5">
-								<label>laserPWM</label>
+							<ioMapping id="0" period="0">
+								<label/>
 							</ioMapping>
 							<ioMapping id="1" period="0">
-								<label>laser2</label>
+								<label>laserPWM</label>
 							</ioMapping>
 							<ioMapping id="2" period="0">
 								<label/>
@@ -8257,17 +9707,17 @@ END_VAR
 							</ioMapping>
 						</ioMappings_AO>
 						<ioMappings_DIO globalConfig="0">
-							<ioMapping id="0" IOType="0">
-								<label/>
+							<ioMapping id="0" IOType="2">
+								<label>Sol0</label>
 							</ioMapping>
-							<ioMapping id="1" IOType="0">
-								<label/>
+							<ioMapping id="1" IOType="2">
+								<label>Sol1</label>
 							</ioMapping>
-							<ioMapping id="2" IOType="0">
-								<label/>
+							<ioMapping id="2" IOType="2">
+								<label>Sol2</label>
 							</ioMapping>
-							<ioMapping id="3" IOType="0">
-								<label/>
+							<ioMapping id="3" IOType="2">
+								<label>Sol3</label>
 							</ioMapping>
 							<ioMapping id="4" IOType="0">
 								<label/>
@@ -8309,6 +9759,9 @@ END_VAR
 							<sharedIO label="XPosAct" type="INT" size=""/>
 							<sharedIO label="YPosAct" type="INT" size=""/>
 							<sharedIO label="ZPosAct" type="INT" size=""/>
+							<sharedIO label="hour" type="INT" size=""/>
+							<sharedIO label="minute" type="INT" size=""/>
+							<sharedIO label="second" type="INT" size=""/>
 						</sharedInputs>
 						<sharedOutputs>
 							<sharedIO label="XDir" type="BOOL" size=""/>
@@ -8321,6 +9774,9 @@ END_VAR
 							<sharedIO label="ZSpeed" type="INT" size=""/>
 							<sharedIO label="ZPos" type="INT" size=""/>
 							<sharedIO label="Home" type="BOOL" size=""/>
+							<sharedIO label="ADir" type="INT" size=""/>
+							<sharedIO label="ASpeed" type="INT" size=""/>
+							<sharedIO label="APos" type="INT" size=""/>
 						</sharedOutputs>
 					</config>
 					<RS485 protocol="" mode="0" baudRate="38400" serialMode="none,8,1" slaveAddress="1" COMnumber="2" rsmode="1" netId="0" maxSlaves="32" serCfg="1"/>
@@ -8330,6 +9786,7 @@ END_VAR
 
 #include &lt;Arduino_MachineControl.h&gt;
 
+
 #define XDIR_PIN 0
 #define YDIR_PIN 2
 #define ZDIR_PIN 4
@@ -8337,13 +9794,20 @@ END_VAR
 #define XPUL_PIN 1
 #define YPUL_PIN 3
 #define ZPUL_PIN 5
+#define ACCELDEF 1500
 
 
 using namespace machinecontrol;
 
-unsigned long previousMillisX = 0;
-unsigned long previousMillisY = 0;
-unsigned long previousMillisZ = 0;
+unsigned long previousMicrosX = 0;
+unsigned long previousMicrosY = 0;
+unsigned long previousMicrosZ = 0;
+unsigned long previousMicrosA = 0;
+
+int seconds = 0;
+int minutes = 0;
+int hours = 0;
+bool alarm_flag = false;
 
 const int homingSpd = 250;
 const int homingSpdSlow = 1250;
@@ -8353,10 +9817,19 @@ const int awayFromHomeLong = 4000;
 const int awayFromHome = 4000;
 
 
+
+int accelX = 1500;
+int accelY = 1500;
+int accelZ = 1500;
+
+int accelDistXY = 500;
+
 int XPos;
 int YPos;
 int ZPos;
+int APos;
 
+//not implemented
 int XMax = 100;
 int YMax = 100;
 int ZMax = 100;
@@ -8365,21 +9838,47 @@ bool homed = 0;
 
 void setup()
 {
-    
+    //digital_outputs.setRetry();
+    rtc_controller.begin();
+    rtc_controller.enableAlarm();
+
+    minutes = PLCIn.minute = rtc_controller.getMinutes();
+    hours = PLCIn.hour = rtc_controller.getHours();
+    rtc_controller.setMinuteAlarm(minutes + 1);
+    if(minutes == 59) {
+        rtc_controller.setMinuteAlarm(0);
+    }
+    attachInterrupt(RTC_INT, callback_alarm, FALLING);
+
 }
 
 void loop()
 {   
+    if(alarm_flag) {
+        
+        detachInterrupt(RTC_INT);
+        minutes = PLCIn.minute = rtc_controller.getMinutes();
+        PLCIn.hour = rtc_controller.getHours();
+        rtc_controller.setMinuteAlarm(minutes + 1);
+        if(minutes == 59) {
+            rtc_controller.setMinuteAlarm(0);
+    }
+        rtc_controller.clearAlarm();
+        attachInterrupt(RTC_INT, callback_alarm, FALLING);
+        alarm_flag = false;
+    }
 
-    unsigned long currentMillis = micros();
 
+    unsigned long currentMicros = micros();
+    
     //regular move
     if(PLCOut.Home != true) {
     
         
-    MovePosX(currentMillis);
-    MovePosY(currentMillis);
-    MovePosZ(currentMillis);
+    MovePosX(currentMicros);
+    MovePosY(currentMicros);
+    MovePosZ(currentMicros);
+    MoveA(currentMicros);
     
     }
     //homing
@@ -8393,114 +9892,140 @@ void loop()
         //Y home
         HomeY();        
         
-
-        
-
-
     }
         
     PLCIn.XPosAct = XPos;
     PLCIn.YPosAct = YPos;
     PLCIn.ZPosAct = ZPos;
 
-    PulseLowX(currentMillis);
-    PulseLowY(currentMillis);
-    PulseLowZ(currentMillis);
+    PulseLowX(currentMicros);
+    PulseLowY(currentMicros);
+    PulseLowZ(currentMicros);
+    PulseLowA(currentMicros);
     
+    
+    
+
+
 }
 
-
+void callback_alarm() {
+    alarm_flag = true;
+    
+}
 
 void HomeX() {
 
  
     if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
-
-        //get away from home prox before homing sequence. Use delay since we're in a loop.
-            //Positive Dir
-         for(int i = 0; i &lt; awayFromHomeShort; i++) {
-            digital_outputs.set(XDIR_PIN, LOW);
-            MoveFast(XPUL_PIN);
-            }
-        //Move negative until we reach home prox
-        while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-            digital_outputs.set(XDIR_PIN, HIGH);
-            MoveSlow(XPUL_PIN);
-        }
-        //Set position to 0 once prox activated
-        XPos = 0;
+        delay(2);
+        if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
+            delay(2);
+            if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
+                //get away from home prox before homing sequence. Use delay since we're in a loop.
+                //Positive Dir
+                 for(int i = 0; i &lt; awayFromHomeShort; i++) {
+                    digital_outputs.set(XDIR_PIN, LOW);
+                    MoveFast(XPUL_PIN);
+                    }
+                    //Move negative until we reach home prox
+                    while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+                        digital_outputs.set(XDIR_PIN, HIGH);
+                        MoveSlow(XPUL_PIN);
+                    }
+                    //Set position to 0 once prox activated
+                    XPos = 0;
     }
+    }
+    }
+
     
-    
+    //debounce?
     if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-        //Move towards home, negative
-        while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-            digital_outputs.set(XDIR_PIN, HIGH);
-            MoveFast(XPUL_PIN);
-        }
-        //Move away from home, positive
-        for(int i = 0; i &lt; awayFromHomeShort; i++) {
-            digital_outputs.set(XDIR_PIN, LOW);
-            MoveFast(XPUL_PIN);
-            }
-        // towards home, negative
-        while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-            digital_outputs.set(XDIR_PIN, HIGH);
-            MoveSlow(XPUL_PIN);
-        }
-        XPos = 0;
+        delay(2);
+        if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+            delay(2);
+            if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+                //Move towards home, negative
+                while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+                    digital_outputs.set(XDIR_PIN, HIGH);
+                    MoveFast(XPUL_PIN);
+                }
+                //Move away from home, positive
+                for(int i = 0; i &lt; awayFromHomeShort; i++) {
+                    digital_outputs.set(XDIR_PIN, LOW);
+                    MoveFast(XPUL_PIN);
+                    }
+                // towards home, negative
+                while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+                    digital_outputs.set(XDIR_PIN, HIGH);
+                    MoveSlow(XPUL_PIN);
+                }
+                XPos = 0;
        
     }
+    }
 }
+}
+
 
 
 void HomeY() {
 
  
      if(digital_inputs.read(DIN_READ_CH_PIN_01) == true) {
+        delay(2);
+        if(digital_inputs.read(DIN_READ_CH_PIN_01) == true) {
+            delay(2);
+            if(digital_inputs.read(DIN_READ_CH_PIN_01) == true) {
+                //get away from home prox before homing sequence. Use delay since we're in a loop.
+                    //Positive Dir
+                for(int i = 0; i &lt; awayFromHomeShort; i++) {
+                    digital_outputs.set(YDIR_PIN, LOW);
+                    MoveFast(YPUL_PIN);
+                    
+                    }
+                //Move negative until we reach home prox
         
-        //get away from home prox before homing sequence. Use delay since we're in a loop.
-            //Positive Dir
-         for(int i = 0; i &lt; awayFromHomeShort; i++) {
-            digital_outputs.set(YDIR_PIN, LOW);
-            MoveFast(YPUL_PIN);
-            
-            }
-        //Move negative until we reach home prox
-
-        while(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
-            digital_outputs.set(YDIR_PIN, HIGH);
-            MoveSlow(YPUL_PIN);
-        }
-        //Set position to 0 once prox activated
-        YPos = 0;
+                while(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
+                    digital_outputs.set(YDIR_PIN, HIGH);
+                    MoveSlow(YPUL_PIN);
+                }
+                //Set position to 0 once prox activated
+                YPos = 0;
+    }
+    }
     }
     
-    
     if(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
-        //Move towards home, negative
-        while(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
-            digital_outputs.set(YDIR_PIN, HIGH);
-            MoveFast(YPUL_PIN);
-        }
-        
-
-        //Move away from home, positive
-        for(int i = 0; i &lt; awayFromHomeShort; i++) {
-            digital_outputs.set(YDIR_PIN, LOW);
-            MoveFast(YPUL_PIN);
-            
+        delay(2);
+        if(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
+            delay(2);
+            if(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
+            //Move towards home, negative
+            while(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
+                digital_outputs.set(YDIR_PIN, HIGH);
+                MoveFast(YPUL_PIN);
             }
-        // towards home, negative
-        while(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
-            digital_outputs.set(YDIR_PIN, HIGH);
-            MoveSlow(YPUL_PIN);
-        }
-        YPos = 0;
+            
+    
+            //Move away from home, positive
+            for(int i = 0; i &lt; awayFromHomeShort; i++) {
+                digital_outputs.set(YDIR_PIN, LOW);
+                MoveFast(YPUL_PIN);
+                
+                }
+            // towards home, negative
+            while(digital_inputs.read(DIN_READ_CH_PIN_01) != true) {
+                digital_outputs.set(YDIR_PIN, HIGH);
+                MoveSlow(YPUL_PIN);
+            }
+            YPos = 0;
        
     }
     }
-
+    }
+}
 
 
 
@@ -8508,44 +10033,55 @@ void HomeZ() {
 
  
  if(digital_inputs.read(DIN_READ_CH_PIN_02) == true) {
-        //get away from home prox before homing sequence. Use delay since we're in a loop.
-            //Positive Dir
-        for(int i = 0; i &lt; awayFromHomeShort; i++) {
-            digital_outputs.set(ZDIR_PIN, LOW);
-            MoveFast(ZPUL_PIN);
+     delay(2);
+     if(digital_inputs.read(DIN_READ_CH_PIN_02) == true) {
+         delay(2);
+         if(digital_inputs.read(DIN_READ_CH_PIN_02) == true) {
+            //get away from home prox before homing sequence. Use delay since we're in a loop.
+                //Positive Dir
+            for(int i = 0; i &lt; awayFromHomeShort; i++) {
+                digital_outputs.set(ZDIR_PIN, LOW);
+                MoveFast(ZPUL_PIN);
+                }
+                
+            //Move negative until we reach home prox
+    
+            while(digital_inputs.read(DIN_READ_CH_PIN_02) != true) {
+                digital_outputs.set(ZDIR_PIN, HIGH);
+                MoveSlow(ZPUL_PIN);
             }
-            
-        //Move negative until we reach home prox
-
-        while(digital_inputs.read(DIN_READ_CH_PIN_02) != true) {
-            digital_outputs.set(ZDIR_PIN, HIGH);
-            MoveSlow(ZPUL_PIN);
-        }
-        //Set position to 0 once prox activated
-        ZPos = 0;
+            //Set position to 0 once prox activated
+            ZPos = 0;
+    }
+    }
     }
     
     
     if(digital_inputs.read(DIN_READ_CH_PIN_02) != true) {
-        //Move towards home, negative
-        while(!digital_inputs.read(DIN_READ_CH_PIN_02)) {
-            digital_outputs.set(ZDIR_PIN, HIGH);
-            MoveFast(ZPUL_PIN);
-        }
-
-        //Move away from home, positive
-        for(int i = 0; i &lt; awayFromHomeShort; i++) {
-            digital_outputs.set(ZDIR_PIN, LOW);
-            MoveFast(ZPUL_PIN);
-            
+        delay(2);
+        if(digital_inputs.read(DIN_READ_CH_PIN_02) != true) {
+            delay(2);
+            if(digital_inputs.read(DIN_READ_CH_PIN_02) != true) {
+            //Move towards home, negative
+            while(!digital_inputs.read(DIN_READ_CH_PIN_02)) {
+                digital_outputs.set(ZDIR_PIN, HIGH);
+                MoveFast(ZPUL_PIN);
             }
-        // towards home, negative
-        while(digital_inputs.read(DIN_READ_CH_PIN_02) != true) {
-            digital_outputs.set(ZDIR_PIN, HIGH);
-            MoveSlow(ZPUL_PIN);
-        }
-        ZPos = 0;
-       
+    
+            //Move away from home, positive
+            for(int i = 0; i &lt; awayFromHomeShort; i++) {
+                digital_outputs.set(ZDIR_PIN, LOW);
+                MoveFast(ZPUL_PIN);
+                
+                }
+            // towards home, negative
+            while(digital_inputs.read(DIN_READ_CH_PIN_02) != true) {
+                digital_outputs.set(ZDIR_PIN, HIGH);
+                MoveSlow(ZPUL_PIN);
+            }
+            ZPos = 0;
+            }
+    }
     }
         //Clearance
         while(ZPos &lt; 12000) {
@@ -8559,64 +10095,154 @@ void HomeZ() {
 
 
 
-void MovePosX(unsigned long currentMillis) {
-     if (currentMillis - previousMillisX &gt;= PLCOut.XSpeed) {
+void MovePosX(unsigned long currentMicros) {
+     if (currentMicros - previousMicrosX &gt;= PLCOut.XSpeed + accelX) {
         // negative
+        
+           //100    &lt;    200    
         if(PLCOut.XPos &lt; XPos) {
             digital_outputs.set(0, HIGH);
-            digital_outputs.set(1, HIGH);
             XPos--;
+            digital_outputs.set(1, HIGH);
+            
+            //if not at decel distance
+            if(accelX &gt; 0 &amp;&amp; (XPos - PLCOut.XPos) &gt; accelDistXY ) {
+                accelX-=2;
+            } else {
+                if(accelX &lt; ACCELDEF) {
+                    accelX++;
+              
         }
-    
+        }
+        }
+     
+            //200       100
         if(PLCOut.XPos &gt; XPos) {
             //Positive Direction
             digital_outputs.set(0, LOW);
-            digital_outputs.set(1, HIGH);
             XPos++;
+            digital_outputs.set(1, HIGH);
+            
+            //if not at decel distance
+            if(accelX &gt; 0 &amp;&amp; (PLCOut.XPos - XPos) &gt; accelDistXY) {
+                accelX-=2;
+            } else {
+                if(accelX &lt; ACCELDEF) {
+                    accelX++;
+                }
+            }
     }
-        previousMillisX = currentMillis;
-        
+    
+        previousMicrosX = currentMicros;
+        if(PLCOut.XPos == XPos) {
+            accelX = ACCELDEF;
+        }
     }
 
 }
 
-void MovePosY(unsigned long currentMillis) {
-     if (currentMillis - previousMillisY &gt;= PLCOut.YSpeed) {
+void MovePosY(unsigned long currentMicros) {
+     if (currentMicros - previousMicrosY &gt;= PLCOut.YSpeed + accelY) {
         // negative
         if(PLCOut.YPos &lt; YPos) {
             digital_outputs.set(2, HIGH);
-            digital_outputs.set(3, HIGH);
             YPos--;
+            digital_outputs.set(3, HIGH);
+            
+            if(accelY &gt; 0 &amp;&amp; (YPos - PLCOut.YPos) &gt; accelDistXY ) {
+                accelY-=2;
+            } else {
+                if(accelY &lt; ACCELDEF) {
+                    accelY++;
+                }
+            }
         }
     
         if(PLCOut.YPos &gt; YPos) {
             //Positive Direction
             digital_outputs.set(2, LOW);
-            digital_outputs.set(3, HIGH);
             YPos++;
+            digital_outputs.set(3, HIGH);
+            
+            if(accelY &gt; 0 &amp;&amp; (PLCOut.YPos - YPos) &gt; accelDistXY) {
+                accelY-=2;
+            } else {
+                if(accelY &lt; ACCELDEF) {
+                    accelY++;
+                }
+            }
     }
-        previousMillisY = currentMillis;
+        previousMicrosY = currentMicros;
+        if(PLCOut.YPos == YPos) {
+            accelY = ACCELDEF;
         
     }
 
 }
+}
 
-void MovePosZ(unsigned long currentMillis) {
-     if (currentMillis - previousMillisZ &gt;= PLCOut.ZSpeed) {
+void MovePosZ(unsigned long currentMicros) {
+     if (currentMicros - previousMicrosZ &gt;= PLCOut.ZSpeed + accelZ) {
         // negative
-        if(ZPos &gt; PLCOut.ZPos) {
+        if(PLCOut.ZPos &lt; ZPos) {
             digital_outputs.set(4, HIGH);
-            digital_outputs.set(5, HIGH);
             ZPos--;
+            digital_outputs.set(5, HIGH);
+            
+            if(accelZ &gt; 0 &amp;&amp; (ZPos - PLCOut.ZPos) &gt; accelDistXY ) {
+                accelZ-=2;
+            } else {
+                if(accelZ &lt; ACCELDEF) {
+                    accelZ++;
+                }
+            }
         }
     
-        if(ZPos &lt; PLCOut.ZPos) {
+        if(PLCOut.ZPos &gt; ZPos) {
             //Positive Direction
             digital_outputs.set(4, LOW);
-            digital_outputs.set(5, HIGH);
             ZPos++;
+            digital_outputs.set(5, HIGH);
+            
+            if(accelZ &gt; 0 &amp;&amp; (PLCOut.ZPos - ZPos) &gt; accelDistXY) {
+                accelZ-=2;
+            } else {
+                if(accelZ &lt; ACCELDEF) {
+                    accelZ++;
+                }
+            }
     }
-        previousMillisZ = currentMillis;
+        previousMicrosZ = currentMicros;
+        if(PLCOut.ZPos == ZPos) {
+            accelZ = 1500;
+        
+    }
+
+}
+}
+
+void MoveA(unsigned long currentMicros) {
+    if (currentMicros - previousMicrosA &gt;= PLCOut.ASpeed) {
+        // negative
+        if(PLCOut.APos &lt; APos) {
+            digital_outputs.set(6, HIGH);
+            APos--;
+            digital_outputs.set(7, HIGH);
+            
+        }
+    
+        if(PLCOut.APos &gt; APos) {
+            //Positive Direction
+            digital_outputs.set(6, LOW);
+            APos++;
+            digital_outputs.set(7, HIGH);
+            
+    }
+    //reset position to 0, APosOut not really needed
+        if(PLCOut.APos == 0) {
+            APos = 0;
+        }  
+        previousMicrosA = currentMicros;
         
     }
 
@@ -8639,23 +10265,30 @@ void MoveFast(int pul) {
 
 
 
-void PulseLowX(unsigned long currentMillis) {
-    if(currentMillis - previousMillisX &gt; 40) {
+void PulseLowX(unsigned long currentMicros) {
+    if(currentMicros - previousMicrosX &gt; 100) {
         digital_outputs.set(1, LOW);
 
     }
 }
 
-void PulseLowY(unsigned long currentMillis) {
-    if(currentMillis - previousMillisY &gt; 40) {
+void PulseLowY(unsigned long currentMicros) {
+    if(currentMicros - previousMicrosY &gt; 100) {
         digital_outputs.set(3, LOW);
 
     }
 }
 
-void PulseLowZ(unsigned long currentMillis) {
-    if(currentMillis - previousMillisZ &gt; 40) {
+void PulseLowZ(unsigned long currentMicros) {
+    if(currentMicros - previousMicrosZ &gt; 100) {
         digital_outputs.set(5, LOW);
+
+    }
+}
+
+void PulseLowA(unsigned long currentMicros) {
+    if(currentMicros - previousMicrosA &gt; 100) {
+        digital_outputs.set(7, LOW);
 
     }
 }
