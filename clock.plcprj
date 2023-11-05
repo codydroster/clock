@@ -98,6 +98,7 @@
 						<address type="M" typeVar="X" index="3" subIndex="4"/>
 					</var>
 					<var name="cutDigit" type="INT"/>
+					<var name="engraveSeq" type="BOOL"/>
 				</group>
 				<group name="I_O_mappings_DIO" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
 					<var name="Sol0" type="BOOL">
@@ -368,97 +369,68 @@
 						</LD2>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="StepperMAN" version="1.0.0" creationDate="1695601693" lastModifiedDate="1696543245" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave0" version="1.0.0" creationDate="1699186634" lastModifiedDate="1699192008" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
-							<var name="POSIN" type="INT"/>
-							<var name="SPDIN" type="INT"/>
-							<var name="POSACT" type="INT"/>
+							<var name="YPOS0" type="INT"/>
+							<var name="XPOSACT" type="INT"/>
+							<var name="YPOSACT" type="INT"/>
 						</inputVars>
 						<outputVars>
-							<var name="POSOUT" type="INT"/>
-							<var name="SPDOUT" type="INT"/>
-							<var name="DN" type="BOOL"/>
+							<var name="LASERPWM" type="REAL"/>
+							<var name="XPOSOUT" type="INT"/>
+							<var name="YPOSOUT" type="INT"/>
 						</outputVars>
+						<externalVars>
+							<var name="XOFF" type="INT"/>
+							<var name="YOFF" type="INT"/>
+							<var name="CURSEQ" type="INT"/>
+							<var name="CUTFRONTX" type="INT"/>
+						</externalVars>
 					</vars>
 					<iecDeclaration active="FALSE"/>
 					<interfaces/>
 					<methods/>
-					<sourceCode type="LD2">
-						<LD2 version="1">
-							<network label="" id="1" nextID="65" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<operator name="MOVE" id="62">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="UNDEF">
-													<var name="SPDIN" id="63"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="SPDOUT" id="64"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="2" nextID="8" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<operator name="MOVE" id="2">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="UNDEF">
-													<var name="POSIN" id="6"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="POSOUT" id="7"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="3" nextID="6" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<operator name="EQ" id="2">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="">
-													<var name="POSIN" id="3"/>
-												</pin>
-												<pin name="1" neg="false" type="">
-													<var name="POSACT" id="4"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="2" neg="false" type="BOOL">
-													<var name="DN" id="5"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-						</LD2>
+					<sourceCode type="ST">
+						<![CDATA[//
+IF(CURSEQ = 10) THEN
+XPOSOUT := XOFF + CUTFRONTX + 100;
+YPOSOUT := YOFF + YPOS0 + 100;
+END_IF
+
+
+//Fire laser while moving through sequence
+IF(CURSEQ > 10) AND (CURSEQ < 100) THEN
+LASERPWM := 1.0;
+END_IF
+
+IF(CURSEQ = 11) THEN
+XPOSOUT := XOFF + XPOS0 + 100;
+YPOSOUT := YOFF + YPOS0 + 100;
+END_IF
+
+IF(CURSEQ = 12) THEN
+XPOSOUT := XOFF + XPOS0 + 100;
+YPOSOUT := YOFF + YPOS0 + 100;
+END_IF
+
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+CURSEQ = CURSEQ + 1;
+END_IF
+
+
+//End of engrave sequence looking for 100
+//23 is a placeholder for last sequence
+IF(CURSEQ > 23) THEN
+CURSEQ := 100;
+END_IF
+
+]]>
 					</sourceCode>
 				</functionBlock>
 			</functionBlocks>
@@ -1674,7 +1646,7 @@
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1698588697" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1699189817" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="step0" type="StepperSEQ"/>
@@ -2387,10 +2359,10 @@
 										<operator name="ADD" id="24">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="">
+												<pin name="0" neg="false" type="UNDEF">
 													<const name="1" id="29"/>
 												</pin>
-												<pin name="1" neg="false" type="">
+												<pin name="1" neg="false" type="UNDEF">
 													<var name="pickIndex" id="30"/>
 												</pin>
 											</inputs>
@@ -2398,23 +2370,11 @@
 												<pin name="ENO" neg="false" type="BOOL">
 													<outputLine/>
 												</pin>
-												<pin name="2" neg="false" type="">
+												<pin name="2" neg="false" type="UNDEF">
 													<var name="pickIndex" id="27"/>
 												</pin>
 											</outputs>
 										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="11" nextID="15" comment="" disabled="true" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<and id="6">
-											<contact name="auto" type="Normal" id="7"/>
-											<contact name="pushSeq" type="Normal" id="5"/>
-											<contact name="workDone" type="Normal" id="2"/>
-										</and>
 									</input>
 									<outputs/>
 								</assignment>
@@ -2944,7 +2904,7 @@
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Sched" version="1.0.0" creationDate="1697805682" lastModifiedDate="1698588519" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Sched" version="1.0.0" creationDate="1697805682" lastModifiedDate="1699190599" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="START_PB" type="BOOL"/>
@@ -2982,15 +2942,52 @@
 							<network label="" id="2" nextID="5" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
-										<contact name="START_PB" type="Normal" id="0"/>
+										<contact name="START_PB" type="Positive" id="0"/>
 									</input>
 									<outputs>
 										<coil name="auto" type="Set" id="1"/>
-										<coil name="cutSeq" type="Set" id="4"/>
+										<coil name="engraveSeq" type="Set" id="4"/>
 									</outputs>
 								</assignment>
 							</network>
 							<network label="" id="3" nextID="12" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<contact name="engraveSeq" type="Negative" id="0"/>
+									</input>
+									<outputs>
+										<tmpVar id="8"/>
+									</outputs>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input>
+										<operator name="MOVE" id="2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="10" id="3"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="4"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="8">
+									<input/>
+									<outputs>
+										<coil name="cutSeq" type="Set" id="11"/>
+									</outputs>
+								</assignment>
+							</network>
+							<network label="" id="4" nextID="12" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<contact name="cutSeq" type="Negative" id="0"/>
@@ -3027,7 +3024,7 @@
 									</outputs>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="12" comment="" disabled="false" disableCondition="">
+							<network label="" id="5" nextID="12" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<contact name="pickSeq" type="Negative" id="0"/>
@@ -3064,7 +3061,7 @@
 									</outputs>
 								</assignment>
 							</network>
-							<network label="" id="5" nextID="12" comment="" disabled="false" disableCondition="">
+							<network label="" id="6" nextID="12" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<contact name="placeSeq" type="Negative" id="0"/>
@@ -3101,27 +3098,40 @@
 									</outputs>
 								</assignment>
 							</network>
-							<network label="" id="6" nextID="29" comment="" disabled="true" disableCondition="">
+						</LD2>
+					</sourceCode>
+				</program>
+				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1699190833" excludeFromBuild="TRUE" excludeFromBuildIfNotDef="">
+					<vars>
+						<localVars>
+							<var name="eng0" type="Engrave0"/>
+							<var name="eng1" type="Engrave0"/>
+							<var name="eng2" type="Engrave0"/>
+							<var name="eng3" type="Engrave0"/>
+							<var name="eng4" type="Engrave0"/>
+							<var name="eng5" type="Engrave0"/>
+							<var name="eng6" type="Engrave0"/>
+							<var name="eng7" type="Engrave0"/>
+							<var name="eng8" type="Engrave0"/>
+							<var name="eng9" type="Engrave0"/>
+						</localVars>
+					</vars>
+					<iecDeclaration active="FALSE"/>
+					<sourceCode type="LD2">
+						<LD2 version="1">
+							<network label="" id="1" nextID="15" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
-										<and id="6">
-											<contact name="auto" type="Normal" id="7"/>
-											<contact name="pushSeq" type="Normal" id="5"/>
-											<contact name="workDone" type="Normal" id="2"/>
-										</and>
-									</input>
-									<outputs>
-										<coil name="pushSeq" type="Reset" id="4"/>
-										<tmpVar id="8"/>
-									</outputs>
-								</assignment>
-								<assignment fromTmpVar="8">
-									<input>
-										<operator name="MOVE" id="11">
+										<operator name="MOVE" id="10">
 											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="11">
+														<contact name="auto" type="Normal" id="0"/>
+														<contact name="engraveSeq" type="Positive" id="2"/>
+													</and>
+												</pin>
 												<pin name="0" neg="false" type="UNDEF">
-													<var name="cutDigit" id="12"/>
+													<var name="timeRTC[placeIndex]" id="12"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -3129,58 +3139,7 @@
 													<outputLine/>
 												</pin>
 												<pin name="1" neg="false" type="UNDEF">
-													<var name="placedCur[placeIndex]" id="13"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-								<assignment fromTmpVar="8">
-									<input>
-										<operator name="MOVE" id="16">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="UNDEF">
-													<const name="10" id="17"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="curSeq" id="18"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-								<assignment fromTmpVar="8">
-									<input/>
-									<outputs>
-										<coil name="cutSeq" type="Set" id="21"/>
-									</outputs>
-								</assignment>
-								<assignment fromTmpVar="8">
-									<input>
-										<operator name="ADD" id="24">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="UNDEF">
-													<var name="pickIndex" id="25"/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<const name="1" id="28"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="2" neg="false" type="UNDEF">
-													<var name="pickIndex" id="27"/>
+													<var name="cutDigit" id="14"/>
 												</pin>
 											</outputs>
 										</operator>
@@ -3188,15 +3147,632 @@
 									<outputs/>
 								</assignment>
 							</network>
-						</LD2>
-					</sourceCode>
-				</program>
-				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1698190524" excludeFromBuild="TRUE" excludeFromBuildIfNotDef="">
-					<vars/>
-					<iecDeclaration active="FALSE"/>
-					<sourceCode type="LD2">
-						<LD2 version="1">
-							<network label="" id="1" nextID="2" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng0">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="0" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="3" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="1" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="4" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng2">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="2" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="5" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng3">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="3" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="6" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng4">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="4" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="7" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng5">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="5" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="8" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng6">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="6" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="9" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng7">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="7" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="10" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng8">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="8" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="11" nextID="26" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="Engrave0" id="19" instance="eng9">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<operator name="EQ" id="5">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="6">
+																	<contact name="auto" type="Normal" id="0"/>
+																	<contact name="engraveSeq" type="Normal" id="3"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="cutDigit" id="7"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="9" id="10"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
+												</pin>
+												<pin name="YPOS0" neg="false" type="INT">
+													<var name="cutPositionsY[pickIndex]" id="20"/>
+												</pin>
+												<pin name="XPOSACT" neg="false" type="INT">
+													<var name="XPosAct" id="24"/>
+												</pin>
+												<pin name="YPOSACT" neg="false" type="INT">
+													<var name="YPosAct" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="LASERPWM" neg="false" type="REAL">
+													<var name="laserPWM" id="21"/>
+												</pin>
+												<pin name="XPOSOUT" neg="false" type="INT">
+													<var name="XPos" id="22"/>
+												</pin>
+												<pin name="YPOSOUT" neg="false" type="INT">
+													<var name="YPos" id="23"/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="12" nextID="38" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="EQ" id="23">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="19">
+														<contact name="auto" type="Normal" id="17"/>
+														<contact name="engraveSeq" type="Normal" id="18"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="curSeq" id="24"/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<const name="100" id="27"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="2" neg="false" type="BOOL">
+													<var name="workDone" id="37"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="13" nextID="8" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<and id="6">
+											<contact name="auto" type="Normal" id="7"/>
+											<contact name="engraveSeq" type="Normal" id="5"/>
+											<contact name="workDone" type="Normal" id="2"/>
+										</and>
+									</input>
+									<outputs>
+										<coil name="engraveSeq" type="Reset" id="4"/>
+									</outputs>
+								</assignment>
+							</network>
+							<network label="" id="14" nextID="2" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<contact name="?" type="Normal" id="0"/>
@@ -9578,7 +10154,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="3037">
+			<root name="clock" nextID="3430">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
@@ -9588,7 +10164,6 @@ END_VAR
 				<GlobalVars name="Ungrouped_vars" id="369"/>
 				<Pou name="init" id="444"/>
 				<Pou name="Pick_SEQ" id="503"/>
-				<Pou name="StepperMAN" id="618"/>
 				<Pou name="Place_SEQ" id="903"/>
 				<Pou name="Push_SEQ" id="904"/>
 				<Pou name="Cut_SEQ" id="905"/>
@@ -9596,6 +10171,7 @@ END_VAR
 				<Pou name="Sched" id="1605"/>
 				<Pou name="Engrave_SEQ" id="1903"/>
 				<Pou name="TimeGetter" id="2138"/>
+				<Pou name="Engrave0" id="3185"/>
 			</root>
 		</workspace>
 	</sources>
