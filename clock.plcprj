@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <plcProject caseSensitive="true" extendedIdNames="false" useCustomWorkspace="true" debugMode="false" extcheck="true" SFCControl="false" strictPointerCheck="true" verboseWarningMode="false" iecTypeConversionRules="false" PNContactsOnEachNetwork="false" LocalVarsFBAccess="false" strictEnumsCheck="true" copyWarningThreshold="200" version="2.11" useLD2="true" useXPLCFiles="false" useFBMethods="false" customSortOfProjectTree="false" autoDerefPointers="false">
 	<image>clock.imgx</image>
-	<commSettings>Modbus:247,1000,M#COM:14,38400,N,8,1,H</commSettings>
+	<commSettings>Modbus:247,1000,M#COM:4,38400,N,8,1,H</commSettings>
 	<sources>
 		<main>
 			<resources>
@@ -375,7 +375,7 @@
 						</LD2>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave0" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700852166" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave0" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700859684" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -526,7 +526,7 @@ END_IF;
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave2" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700849779" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave2" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700860658" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -549,8 +549,8 @@ END_IF;
 					<sourceCode type="ST">
 						<![CDATA[
 IF (curSeq = 20) THEN
-XPOSOUT := XPOS0 + 1520;
-YPOSOUT := YPOS0 + 450;
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 
@@ -567,23 +567,23 @@ YPOSOUT := YPOS0 + 450;
 END_IF;
 
 IF (curSeq = 22) THEN
-XPOSOUT := XPOS0 + 450;
-YPOSOUT := YPOS0 + 1475;
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 450;
 END_IF;
 
 IF (curSeq = 23) THEN
-XPOSOUT := XPOS0 + 1520;
-YPOSOUT := YPOS0 + 1475;
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 IF (curSeq = 24) THEN
-XPOSOUT := XPOS0 + 1520;
-YPOSOUT := YPOS0 + 2500;
+XPOSOUT := XPOS0 + 2500;
+YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 IF (curSeq = 25) THEN
-XPOSOUT := XPOS0 + 450;
-YPOSOUT := YPOS0 + 2500;
+XPOSOUT := XPOS0 + 2500;
+YPOSOUT := YPOS0 + 450;
 END_IF;
 
 
@@ -770,7 +770,7 @@ END_IF;
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave5" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700849876" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave5" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700861086" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -806,28 +806,28 @@ LASERPWM := 0.0;
 END_IF;
 
 IF (curSeq = 21) THEN
-XPOSOUT := XPOS0 + 1520;
-YPOSOUT := YPOS0 + 450;
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 IF (curSeq = 22) THEN
-XPOSOUT := XPOS0 + 1520;
-YPOSOUT := YPOS0 + 1475;
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 IF (curSeq = 23) THEN
-XPOSOUT := XPOS0 + 450;
-YPOSOUT := YPOS0 + 1475;
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 450;
 END_IF;
 
 IF (curSeq = 24) THEN
-XPOSOUT := XPOS0 + 450;
-YPOSOUT := YPOS0 + 2500;
+XPOSOUT := XPOS0 + 2500;
+YPOSOUT := YPOS0 + 450;
 END_IF;
 
 IF (curSeq = 25) THEN
-XPOSOUT := XPOS0 + 1520;
-YPOSOUT := YPOS0 + 2500;
+XPOSOUT := XPOS0 + 2500;
+YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 
@@ -1157,7 +1157,7 @@ END_IF;
 				</functionBlock>
 			</functionBlocks>
 			<programs>
-				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1700854997" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1700863129" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="home_tim" type="TON"/>
@@ -1171,7 +1171,7 @@ END_IF;
 								<initValue>6000</initValue>
 							</var>
 							<var name="pick" type="INT">
-								<initValue>9</initValue>
+								<initValue>0</initValue>
 							</var>
 							<var name="place" type="INT">
 								<initValue>2</initValue>
@@ -3389,13 +3389,12 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1700853197" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1700863247" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="cnt0" type="CTD"/>
-							<var name="laserPWR" type="REAL"/>
-							<var name="cutSpeed" type="INT">
-								<initValue>1000</initValue>
+							<var name="laserPWR" type="REAL">
+								<initValue>10.0</initValue>
 							</var>
 							<var name="step0" type="StepperSEQ"/>
 							<var name="step1" type="StepperSEQ"/>
@@ -3404,6 +3403,9 @@ END_IF;
 						<localConsts>
 							<const name="cutOffset" type="INT">
 								<initValue>1970</initValue>
+							</const>
+							<const name="cutSpeed" type="INT">
+								<initValue>5500</initValue>
 							</const>
 						</localConsts>
 					</vars>
@@ -3511,7 +3513,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="3" nextID="62" comment="" disabled="false" disableCondition="">
+							<network label="" id="3" nextID="67" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="MOVE" id="59">
@@ -3557,53 +3559,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="63" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<operator name="MOVE" id="59">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL">
-													<operator name="GT" id="30">
-														<inputs>
-															<pin name="EN" neg="false" type="BOOL">
-																<and id="26">
-																	<contact name="auto" type="Normal" id="0"/>
-																	<contact name="cutSeq" type="Normal" id="23"/>
-																</and>
-															</pin>
-															<pin name="0" neg="false" type="UNDEF">
-																<var name="curSeq" id="31"/>
-															</pin>
-															<pin name="1" neg="false" type="UNDEF">
-																<const name="30" id="34"/>
-															</pin>
-														</inputs>
-														<outputs>
-															<pin name="ENO" neg="false" type="BOOL"/>
-															<pin name="2" neg="false" type="BOOL">
-																<outputLine/>
-															</pin>
-														</outputs>
-													</operator>
-												</pin>
-												<pin name="0" neg="false" type="UNDEF">
-													<const name="0.0" id="62"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="laserPWM" id="61"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="5" nextID="94" comment="" disabled="false" disableCondition="">
+							<network label="" id="4" nextID="94" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="67" instance="step0">
@@ -3676,7 +3632,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="6" nextID="95" comment="" disabled="false" disableCondition="">
+							<network label="" id="5" nextID="95" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="67" instance="step1">
@@ -3749,7 +3705,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="7" nextID="95" comment="" disabled="false" disableCondition="">
+							<network label="" id="6" nextID="96" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="67" instance="step2">
@@ -3782,7 +3738,7 @@ END_IF;
 													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
-													<var name="cutFrontX" id="92"/>
+													<expression name="cutFrontX + 50" id="95"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
 													<expression name="cutPositionsY[pickIndex] - cutOffset" id="94"/>
@@ -3822,7 +3778,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="8" nextID="38" comment="" disabled="false" disableCondition="">
+							<network label="" id="7" nextID="38" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="23">
@@ -3853,7 +3809,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="9" nextID="20" comment="" disabled="false" disableCondition="">
+							<network label="" id="8" nextID="26" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<and id="18">
@@ -3903,6 +3859,27 @@ END_IF;
 												</pin>
 												<pin name="1" neg="false" type="UNDEF">
 													<var name="YSpeed" id="15"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="5">
+									<input>
+										<operator name="MOVE" id="22">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="">
+													<const name="0.0" id="25"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="">
+													<var name="laserPWM" id="24"/>
 												</pin>
 											</outputs>
 										</operator>
@@ -11424,7 +11401,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="4394">
+			<root name="clock" nextID="4527">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
