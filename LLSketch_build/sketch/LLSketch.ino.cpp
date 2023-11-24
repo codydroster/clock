@@ -36,7 +36,7 @@ struct PLCSharedVarsOutput_t
 PLCSharedVarsOutput_t& PLCOut = (PLCSharedVarsOutput_t&)m_PLCSharedVarsOutputBuf;
 
 
-AlPlc AxelPLC(-477531564);
+AlPlc AxelPLC(1657920167);
 
 // shared variables can be accessed with PLCIn.varname and PLCOut.varname
 
@@ -100,29 +100,29 @@ void loop();
 void callback_alarm();
 #line 173 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeX();
-#line 229 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 236 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeY();
-#line 288 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 295 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeZ();
-#line 354 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 361 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosX(unsigned long currentMicros);
-#line 400 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 407 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosY(unsigned long currentMicros);
-#line 440 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 447 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosZ(unsigned long currentMicros);
-#line 480 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 487 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MoveA(unsigned long currentMicros);
-#line 507 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
-void MoveSlow(int pul);
 #line 514 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+void MoveSlow(int pul);
+#line 521 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MoveFast(int pul);
-#line 524 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
-void PulseLowX(unsigned long currentMicros);
 #line 531 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
-void PulseLowY(unsigned long currentMicros);
+void PulseLowX(unsigned long currentMicros);
 #line 538 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
-void PulseLowZ(unsigned long currentMicros);
+void PulseLowY(unsigned long currentMicros);
 #line 545 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+void PulseLowZ(unsigned long currentMicros);
+#line 552 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowA(unsigned long currentMicros);
 #line 93 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void setup()
@@ -257,6 +257,13 @@ void HomeX() {
     }
     }
 }
+            //Clearance
+        while(XPos < 1000) {
+            digital_outputs.set(XDIR_PIN, LOW);
+            MoveSlow(XPUL_PIN);
+            XPos++;
+
+        }
 }
 
 

@@ -35,7 +35,7 @@ struct PLCSharedVarsOutput_t
 PLCSharedVarsOutput_t& PLCOut = (PLCSharedVarsOutput_t&)m_PLCSharedVarsOutputBuf;
 
 
-AlPlc AxelPLC(-477531564);
+AlPlc AxelPLC(1657920167);
 
 // shared variables can be accessed with PLCIn.varname and PLCOut.varname
 
@@ -223,6 +223,13 @@ void HomeX() {
     }
     }
 }
+            //Clearance
+        while(XPos < 1000) {
+            digital_outputs.set(0, LOW);
+            MoveSlow(1);
+            XPos++;
+
+        }
 }
 
 
