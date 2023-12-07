@@ -375,7 +375,7 @@
 						</LD2>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave0" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700924285" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave0" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727471" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -434,7 +434,7 @@ END_IF;
 
 //Move to next sequence if current sequence reaches its requested position.
 //Might need another condition so CURSEQ doesn't keep incrementing
-IF (curSeq >= 20) AND (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN 
 curSeq := curSeq + 1;
 END_IF;
 
@@ -443,12 +443,14 @@ END_IF;
 //23 is a placeholder for last sequence
 IF(curSeq > 24) THEN
 curSeq := 100;
+LASERPWM := 0.0;
+
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave1" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700924885" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave1" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727468" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -521,12 +523,13 @@ END_IF;
 //23 is a placeholder for last sequence
 IF(curSeq > 25) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave2" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700925286" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave2" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727478" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -604,12 +607,13 @@ END_IF;
 //23 is a placeholder for last sequence
 IF(curSeq > 26) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave3" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700925561" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave3" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727484" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -692,12 +696,13 @@ END_IF;
 //23 is a placeholder for last sequence
 IF(curSeq > 27) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave4" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700925788" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave4" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727490" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -761,12 +766,13 @@ END_IF;
 //23 is a placeholder for last sequence
 IF(curSeq > 23) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave5" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700925971" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave5" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727496" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -839,12 +845,13 @@ END_IF;
 //23 is a placeholder for last sequence
 IF(curSeq > 25) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave6" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700926400" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave6" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727505" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -920,12 +927,13 @@ END_IF;
 //End of engrave sequence looking for 100
 IF(curSeq > 26) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave7" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700926564" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave7" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727514" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -982,12 +990,13 @@ END_IF;
 //End of engrave sequence looking for 100
 IF(curSeq > 22) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave8" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700926941" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave8" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727531" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -1073,12 +1082,13 @@ END_IF;
 //End of engrave sequence looking for 100
 IF(curSeq > 27) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="Engrave9" version="1.0.0" creationDate="1699186634" lastModifiedDate="1700927073" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="Engrave9" version="1.0.0" creationDate="1699186634" lastModifiedDate="1701727524" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -1150,6 +1160,7 @@ END_IF;
 //End of engrave sequence looking for 100
 IF(curSeq > 24) THEN
 curSeq := 100;
+LASERPWM := 0.0;
 END_IF;
 
 ]]>
@@ -2596,7 +2607,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1700931053" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1701727992" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="step0" type="StepperSEQ"/>
@@ -3067,9 +3078,7 @@ END_IF;
 									<input>
 										<funcBlock name="TOF" id="131" instance="solTim1">
 											<inputs>
-												<pin name="IN" neg="false" type="BOOL">
-													<contact name="test1" type="Normal" id="124"/>
-												</pin>
+												<pin name="IN" neg="false" type="BOOL"/>
 												<pin name="PT" neg="false" type="UDINT">
 													<var name="solDur" id="132"/>
 												</pin>
@@ -3122,7 +3131,7 @@ END_IF;
 													<var name="curSeq" id="69"/>
 												</pin>
 												<pin name="XPOSIN" neg="false" type="INT">
-													<const name="19000" id="100"/>
+													<const name="19800" id="100"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
 													<var name="placePositionsY[placeIndex]" id="98"/>
@@ -3379,7 +3388,7 @@ END_IF;
 														<inputs>
 															<pin name="EN" neg="false" type="BOOL"/>
 															<pin name="0" neg="false" type="UNDEF">
-																<const name="9" id="48"/>
+																<const name="10" id="48"/>
 															</pin>
 															<pin name="1" neg="false" type="UNDEF">
 																<var name="pickIndex" id="45"/>
@@ -3413,7 +3422,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1700863247" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1701727851" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="cnt0" type="CTD"/>
@@ -3429,7 +3438,7 @@ END_IF;
 								<initValue>1970</initValue>
 							</const>
 							<const name="cutSpeed" type="INT">
-								<initValue>5500</initValue>
+								<initValue>6200</initValue>
 							</const>
 						</localConsts>
 					</vars>
@@ -3894,7 +3903,7 @@ END_IF;
 										<operator name="MOVE" id="22">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="">
+												<pin name="0" neg="false" type="UNDEF">
 													<const name="0.0" id="25"/>
 												</pin>
 											</inputs>
@@ -3902,7 +3911,7 @@ END_IF;
 												<pin name="ENO" neg="false" type="BOOL">
 													<outputLine/>
 												</pin>
-												<pin name="1" neg="false" type="">
+												<pin name="1" neg="false" type="UNDEF">
 													<var name="laserPWM" id="24"/>
 												</pin>
 											</outputs>
@@ -11443,7 +11452,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="4735">
+			<root name="clock" nextID="4935">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
