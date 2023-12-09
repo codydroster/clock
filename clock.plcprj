@@ -973,7 +973,7 @@ END_IF;
 				</functionBlock>
 			</functionBlocks>
 			<programs>
-				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1702142644" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1702148865" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="home_tim" type="TON"/>
@@ -2700,7 +2700,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1702140357" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1702149336" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="step0" type="StepperSEQ"/>
@@ -2712,7 +2712,7 @@ END_IF;
 							<var name="step6" type="StepperSEQ"/>
 							<var name="solTim" type="TON"/>
 							<var name="solDur" type="INT">
-								<initValue>750</initValue>
+								<initValue>250</initValue>
 							</var>
 							<var name="test1" type="BOOL"/>
 							<var name="solTim1" type="TOF"/>
@@ -3523,7 +3523,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1702075333" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1702149082" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="cnt0" type="CTD"/>
@@ -3534,13 +3534,14 @@ END_IF;
 							<var name="step1" type="StepperSEQ"/>
 							<var name="step2" type="StepperSEQ"/>
 							<var name="step3" type="StepperSEQ"/>
+							<var name="step4" type="StepperSEQ"/>
 						</localVars>
 						<localConsts>
 							<const name="cutOffset" type="INT">
 								<initValue>1970</initValue>
 							</const>
 							<const name="cutSpeed" type="INT">
-								<initValue>4000</initValue>
+								<initValue>6000</initValue>
 							</const>
 						</localConsts>
 					</vars>
@@ -4001,7 +4002,7 @@ END_IF;
 													<var name="curSeq" id="24"/>
 												</pin>
 												<pin name="1" neg="false" type="UNDEF">
-													<const name="40" id="27"/>
+													<const name="50" id="27"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -10889,7 +10890,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="5531">
+			<root name="clock" nextID="5646">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
