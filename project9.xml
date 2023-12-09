@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0201" xmlns:xhtml="http://www.w3.org/1999/xhtml"><fileHeader companyName="Arduino SRL" companyURL="https://www.axelsoftware.it/" productName="Arduino PLC IDE Application" productVersion="1.0.3.1" creationDateTime="2023-12-08T15:50:07"/><contentHeader name="" version="" author=""><coordinateInfo><fbd><scaling x="1" y="1"/></fbd><ld><scaling x="1" y="1"/></ld><sfc><scaling x="1" y="1"/></sfc></coordinateInfo></contentHeader><types><dataTypes/><pous><pou name="TimeGetter" pouType="program"><interface/><body><ST><xhtml:p><![CDATA[
+timeRTC[0] := minute MOD 10;
+timeRTC[1] := minute / 10;
+
+timeRTC[2] := hour MOD 10;
+timeRTC[3] := hour / 10;
+
+/* placedCur[3] is hour1 and also most significant.
+If time changes, reset placedCur[x] to -1 and drop piece. */
+IF(placedCur[3] = -1) THEN
+	placeIndex := 3;
+
+ELSIF(placedCur[2] = -1) THEN
+	placeIndex := 2;
+
+ELSIF(placedCur[1] = -1) THEN
+	placeIndex := 1;
+	
+ELSIF(placedCur[0] = -1) THEN
+	placeIndex := 0;
+
+END_IF;
+
+//set placedCur[x] to -1 when time changes, and not in motion.
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave0" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 550;
+END_IF;
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN 
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+//23 is a placeholder for last sequence
+IF(curSeq > 24) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave1" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 768;
+YPOSOUT := YPOS0 + 1303;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 985;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 2405;
+YPOSOUT := YPOS0 + 985;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 2405;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 25) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+//23 is a placeholder for last sequence
+IF(curSeq > 25) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave2" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 900;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 1480;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 1480;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 25) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 26) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+//23 is a placeholder for last sequence
+IF(curSeq > 26) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave3" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 1575;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 25) THEN
+XPOSOUT := XPOS0 + 1575;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 26) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 27) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+//23 is a placeholder for last sequence
+IF(curSeq > 27) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave4" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 1412;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 1412;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 741;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 741;
+END_IF;
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+//23 is a placeholder for last sequence
+IF(curSeq > 23) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave5" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 1480;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 1480;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 25) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+//23 is a placeholder for last sequence
+IF(curSeq > 25) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave6" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 25) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 26) THEN
+XPOSOUT := XPOS0 + 1575;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+IF(curSeq > 26) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave7" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+IF(curSeq > 22) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave8" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 1430;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 1430;
+YPOSOUT := YPOS0 + 550;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 1530;
+YPOSOUT := YPOS0 + 550;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 1530;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 25) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 26) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 27) THEN
+XPOSOUT := XPOS0 + 550;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+IF(curSeq > 27) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou><pou name="Engrave9" pouType="functionBlock"><interface><inputVars constant="false" retain="false"><variable name="YPOS0"><type><INT/></type></variable><variable name="XPOS0"><type><INT/></type></variable><variable name="XPOSACT"><type><INT/></type></variable><variable name="YPOSACT"><type><INT/></type></variable></inputVars><outputVars constant="false" retain="false"><variable name="LASERPWM"><type><REAL/></type></variable><variable name="XPOSOUT"><type><INT/></type></variable><variable name="YPOSOUT"><type><INT/></type></variable></outputVars><externalVars constant="false" retain="false"><variable name="curSeq"><type><INT/></type></variable></externalVars><addData/></interface><body><ST><xhtml:p><![CDATA[
+IF (curSeq = 20) THEN
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 550;
+END_IF;
+
+
+//Fire laser while moving through sequence
+IF (curSeq > 20) AND (curSeq < 100) THEN
+LASERPWM := 0.8;
+ELSE
+LASERPWM := 0.0;
+END_IF;
+
+IF (curSeq = 21) THEN
+XPOSOUT := XPOS0 + 1475;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+IF (curSeq = 22) THEN
+XPOSOUT := XPOS0 + 450;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 23) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 24) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 1520;
+END_IF;
+
+
+
+//Move to next sequence if current sequence reaches its requested position.
+//Might need another condition so CURSEQ doesn't keep incrementing
+IF (XPOSOUT = XPOSACT) AND (YPOSOUT = YPOSACT) THEN
+curSeq := curSeq + 1;
+END_IF;
+
+
+//End of engrave sequence looking for 100
+IF(curSeq > 24) THEN
+curSeq := 100;
+LASERPWM := 0.0;
+END_IF;
+
+]]></xhtml:p></ST></body><addData/></pou></pous></types><instances><configurations><configuration name="Configuration"><resource name="Resource"><globalVars name="Global_vars" constant="false" retain="false"><variable name="cnt"><type><INT/></type></variable><variable name="pickSeq"><type><BOOL/></type><initialValue><simpleValue value="FALSE"/></initialValue></variable><variable name="curSeq"><type><INT/></type><initialValue><simpleValue value="10"/></initialValue></variable><variable name="auto"><type><BOOL/></type></variable><variable name="manMode"><type><BOOL/></type></variable><variable name="pickIndex"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="placePositionsY"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type><initialValue><arrayValue><value><simpleValue value="7200"/></value><value><simpleValue value="10200"/></value><value><simpleValue value="13650"/></value><value><simpleValue value="16650"/></value></arrayValue></initialValue></variable><variable name="placeIndex"><type><INT/></type></variable><variable name="placeSeq"><type><BOOL/></type></variable><variable name="laserSeq"><type><INT/></type></variable><variable name="pickPositionX"><type><INT/></type><initialValue><simpleValue value="7975"/></initialValue></variable><variable name="placeClearZ"><type><INT/></type><initialValue><simpleValue value="13600"/></initialValue></variable><variable name="workDone"><type><BOOL/></type><initialValue><simpleValue value="FALSE"/></initialValue></variable><variable name="pushSeq"><type><BOOL/></type></variable><variable name="cutPositionsY"><type><array><dimension lower="0" upper="9"/><baseType><INT/></baseType></array></type><initialValue><arrayValue><value><simpleValue value="20970"/></value><value><simpleValue value="19000"/></value><value><simpleValue value="17030"/></value><value><simpleValue value="15060"/></value><value><simpleValue value="13090"/></value><value><simpleValue value="11120"/></value><value><simpleValue value="9150"/></value><value><simpleValue value="7180"/></value><value><simpleValue value="5210"/></value><value><simpleValue value="3240"/></value></arrayValue></initialValue></variable><variable name="cutBackX"><type><INT/></type><initialValue><simpleValue value="15600"/></initialValue></variable><variable name="cutFrontX"><type><INT/></type><initialValue><simpleValue value="18500"/></initialValue></variable><variable name="cutSeq"><type><BOOL/></type><initialValue><simpleValue value="FALSE"/></initialValue></variable><variable name="moveSpeed"><type><INT/></type><initialValue><simpleValue value="375"/></initialValue></variable><variable name="min0"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="min1"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="hour0"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="hour1"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="placedCur"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type></variable><variable name="timeReal"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type></variable><variable name="timeRTC"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type></variable><variable name="Solenoids" address="%MX3.2"><type><array><dimension lower="0" upper="3"/><baseType><BOOL/></baseType></array></type></variable><variable name="cutDigit"><type><INT/></type></variable><variable name="engraveSeq"><type><BOOL/></type></variable></globalVars><globalVars name="Global_vars_Constant" constant="true" retain="false"><variable name="ZTop"><type><INT/></type><initialValue><simpleValue value="14800"/></initialValue></variable><variable name="XOFF"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="YOFF"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="ZOFF"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="pickPositionsY"><type><array><dimension lower="0" upper="9"/><baseType><INT/></baseType></array></type><initialValue><arrayValue><value><simpleValue value="20900"/></value><value><simpleValue value="18930"/></value><value><simpleValue value="16960"/></value><value><simpleValue value="14990"/></value><value><simpleValue value="13020"/></value><value><simpleValue value="11050"/></value><value><simpleValue value="9080"/></value><value><simpleValue value="7100"/></value><value><simpleValue value="5140"/></value><value><simpleValue value="3600"/></value></arrayValue></initialValue></variable><variable name="pickClearanceZ"><type><INT/></type><initialValue><simpleValue value="10000"/></initialValue></variable><variable name="placePositionX"><type><INT/></type><initialValue><simpleValue value="19400"/></initialValue></variable><variable name="PBTimeOff"><type><INT/></type><initialValue><simpleValue value="200"/></initialValue></variable><variable name="pushClearanceX"><type><INT/></type><initialValue><simpleValue value="16350"/></initialValue></variable></globalVars><globalVars name="I_O_mappings_DIO" constant="false" retain="false"><variable name="Sol1" address="%MX3.2"><type><BOOL/></type></variable><variable name="Sol2" address="%MX3.3"><type><BOOL/></type></variable><variable name="Sol3" address="%MX3.4"><type><BOOL/></type></variable><variable name="EnableXYZ" address="%MX3.0"><type><BOOL/></type></variable><variable name="EnableA" address="%MX3.1"><type><BOOL/></type></variable><variable name="Sol4" address="%MX3.5"><type><BOOL/></type></variable></globalVars><globalVars name="I_O_mappings_DI" constant="false" retain="false"><variable name="XHome" address="%IX0.0"><type><BOOL/></type></variable><variable name="YHome" address="%IX0.1"><type><BOOL/></type></variable><variable name="ZHome" address="%IX0.2"><type><BOOL/></type></variable></globalVars><globalVars name="I_O_mappings_DO" constant="false" retain="false"><variable name="home2"><type><BOOL/></type></variable></globalVars><globalVars name="I_O_mappings_AO" constant="false" retain="false"><variable name="laserPWM" address="%QD1.1"><type><REAL/></type></variable></globalVars></resource></configuration></configurations></instances><addData><data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation"><globalVars name="Global_vars" constant="false" retain="false"><variable name="cnt"><type><INT/></type></variable><variable name="pickSeq"><type><BOOL/></type><initialValue><simpleValue value="FALSE"/></initialValue></variable><variable name="curSeq"><type><INT/></type><initialValue><simpleValue value="10"/></initialValue></variable><variable name="auto"><type><BOOL/></type></variable><variable name="manMode"><type><BOOL/></type></variable><variable name="pickIndex"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="placePositionsY"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type><initialValue><arrayValue><value><simpleValue value="7200"/></value><value><simpleValue value="10200"/></value><value><simpleValue value="13650"/></value><value><simpleValue value="16650"/></value></arrayValue></initialValue></variable><variable name="placeIndex"><type><INT/></type></variable><variable name="placeSeq"><type><BOOL/></type></variable><variable name="laserSeq"><type><INT/></type></variable><variable name="pickPositionX"><type><INT/></type><initialValue><simpleValue value="7975"/></initialValue></variable><variable name="placeClearZ"><type><INT/></type><initialValue><simpleValue value="13600"/></initialValue></variable><variable name="workDone"><type><BOOL/></type><initialValue><simpleValue value="FALSE"/></initialValue></variable><variable name="pushSeq"><type><BOOL/></type></variable><variable name="cutPositionsY"><type><array><dimension lower="0" upper="9"/><baseType><INT/></baseType></array></type><initialValue><arrayValue><value><simpleValue value="20970"/></value><value><simpleValue value="19000"/></value><value><simpleValue value="17030"/></value><value><simpleValue value="15060"/></value><value><simpleValue value="13090"/></value><value><simpleValue value="11120"/></value><value><simpleValue value="9150"/></value><value><simpleValue value="7180"/></value><value><simpleValue value="5210"/></value><value><simpleValue value="3240"/></value></arrayValue></initialValue></variable><variable name="cutBackX"><type><INT/></type><initialValue><simpleValue value="15600"/></initialValue></variable><variable name="cutFrontX"><type><INT/></type><initialValue><simpleValue value="18500"/></initialValue></variable><variable name="cutSeq"><type><BOOL/></type><initialValue><simpleValue value="FALSE"/></initialValue></variable><variable name="moveSpeed"><type><INT/></type><initialValue><simpleValue value="375"/></initialValue></variable><variable name="min0"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="min1"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="hour0"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="hour1"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="placedCur"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type></variable><variable name="timeReal"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type></variable><variable name="timeRTC"><type><array><dimension lower="0" upper="3"/><baseType><INT/></baseType></array></type></variable><variable name="Solenoids" address="%MX3.2"><type><array><dimension lower="0" upper="3"/><baseType><BOOL/></baseType></array></type></variable><variable name="cutDigit"><type><INT/></type></variable><variable name="engraveSeq"><type><BOOL/></type></variable></globalVars></data><data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation"><globalVars name="Global_vars_Constant" constant="true" retain="false"><variable name="ZTop"><type><INT/></type><initialValue><simpleValue value="14800"/></initialValue></variable><variable name="XOFF"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="YOFF"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="ZOFF"><type><INT/></type><initialValue><simpleValue value="0"/></initialValue></variable><variable name="pickPositionsY"><type><array><dimension lower="0" upper="9"/><baseType><INT/></baseType></array></type><initialValue><arrayValue><value><simpleValue value="20900"/></value><value><simpleValue value="18930"/></value><value><simpleValue value="16960"/></value><value><simpleValue value="14990"/></value><value><simpleValue value="13020"/></value><value><simpleValue value="11050"/></value><value><simpleValue value="9080"/></value><value><simpleValue value="7100"/></value><value><simpleValue value="5140"/></value><value><simpleValue value="3600"/></value></arrayValue></initialValue></variable><variable name="pickClearanceZ"><type><INT/></type><initialValue><simpleValue value="10000"/></initialValue></variable><variable name="placePositionX"><type><INT/></type><initialValue><simpleValue value="19400"/></initialValue></variable><variable name="PBTimeOff"><type><INT/></type><initialValue><simpleValue value="200"/></initialValue></variable><variable name="pushClearanceX"><type><INT/></type><initialValue><simpleValue value="16350"/></initialValue></variable></globalVars></data><data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation"><globalVars name="I_O_mappings_DIO" constant="false" retain="false"><variable name="Sol1" address="%MX3.2"><type><BOOL/></type></variable><variable name="Sol2" address="%MX3.3"><type><BOOL/></type></variable><variable name="Sol3" address="%MX3.4"><type><BOOL/></type></variable><variable name="EnableXYZ" address="%MX3.0"><type><BOOL/></type></variable><variable name="EnableA" address="%MX3.1"><type><BOOL/></type></variable><variable name="Sol4" address="%MX3.5"><type><BOOL/></type></variable></globalVars></data><data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation"><globalVars name="I_O_mappings_DI" constant="false" retain="false"><variable name="XHome" address="%IX0.0"><type><BOOL/></type></variable><variable name="YHome" address="%IX0.1"><type><BOOL/></type></variable><variable name="ZHome" address="%IX0.2"><type><BOOL/></type></variable></globalVars></data><data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation"><globalVars name="I_O_mappings_DO" constant="false" retain="false"><variable name="home2"><type><BOOL/></type></variable></globalVars></data><data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation"><globalVars name="I_O_mappings_AO" constant="false" retain="false"><variable name="laserPWM" address="%QD1.1"><type><REAL/></type></variable></globalVars></data></addData></project>
