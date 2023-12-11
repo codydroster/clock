@@ -82,7 +82,6 @@
 					<var name="hour1" type="INT">
 						<initValue>0</initValue>
 					</var>
-					<var name="placedCur" type="INT" dim0="4"/>
 					<var name="timeRTC" type="INT" dim0="4"/>
 					<var name="Solenoids" type="BOOL" dim0="4">
 						<address type="M" typeVar="X" index="3" subIndex="2"/>
@@ -130,7 +129,11 @@
 					</var>
 				</group>
 			</globalVars>
-			<retainVars/>
+			<retainVars>
+				<group name="Global_vars" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
+					<var name="placedCur" type="INT" dim0="4"/>
+				</group>
+			</retainVars>
 			<constantVars>
 				<group name="Global_vars" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="" version="1.0.0">
 					<const name="ZTop" type="INT">
@@ -181,7 +184,7 @@
 			</iecVarsDeclaration>
 			<functions/>
 			<functionBlocks>
-				<functionBlock name="StepperSEQ" version="1.0.0" creationDate="1695601693" lastModifiedDate="1702166822" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="StepperSEQ" version="1.0.0" creationDate="1695601693" lastModifiedDate="1702334149" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="XPOSIN" type="INT"/>
@@ -360,7 +363,7 @@
 						</LD2>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="EngraveX" version="1.0.0" creationDate="1702141782" lastModifiedDate="1702186370" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="EngraveX" version="1.0.0" creationDate="1702141782" lastModifiedDate="1702334786" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -495,7 +498,7 @@ END_IF;
 IF (cutDigit = 2) THEN
 
 IF (curSeq = 20) THEN
-XPOSOUT := XPOS0 + 900;
+XPOSOUT := XPOS0 + 700;
 YPOSOUT := YPOS0 + 1520;
 END_IF;
 
@@ -624,7 +627,7 @@ END_IF;
 IF (cutDigit = 4) THEN
 
 IF (curSeq = 20) THEN
-XPOSOUT := XPOS0 + 1412;
+XPOSOUT := XPOS0 + 1255;
 YPOSOUT := YPOS0 + 450;
 END_IF;
 
@@ -637,18 +640,18 @@ LASERPWM := 0.0;
 END_IF;
 
 IF (curSeq = 21) THEN
-XPOSOUT := XPOS0 + 1412;
+XPOSOUT := XPOS0 + 1255;
 YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 IF (curSeq = 22) THEN
 XPOSOUT := XPOS0 + 450;
-YPOSOUT := YPOS0 + 741;
+YPOSOUT := YPOS0 + 715;
 END_IF;
 
 IF (curSeq = 23) THEN
 XPOSOUT := XPOS0 + 2505;
-YPOSOUT := YPOS0 + 741;
+YPOSOUT := YPOS0 + 715;
 END_IF;
 
 
@@ -808,7 +811,7 @@ END_IF;
 
 IF (curSeq = 22) THEN
 XPOSOUT := XPOS0 + 2505;
-YPOSOUT := YPOS0 + 1520;
+YPOSOUT := YPOS0 + 450;
 END_IF;
 
 
@@ -949,6 +952,40 @@ IF(curSeq > 24) THEN
 curSeq := 100;
 LASERPWM := 0.0;
 END_IF;
+END_IF;
+]]>
+					</sourceCode>
+				</functionBlock>
+				<functionBlock name="TimeChange" version="1.0.0" creationDate="1702334046" lastModifiedDate="1702334201" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+					<vars/>
+					<iecDeclaration active="FALSE"/>
+					<interfaces/>
+					<methods/>
+					<sourceCode type="ST">
+						<![CDATA[//If time changes and the current digit isn't equal to timeRTC[x] then set to -1.
+
+IF(placedCur[3] <> timeRTC[3]) THEN 
+	placedCur[3] := -1;
+ELSE
+	placedCur[3] := timeRTC[3];
+END_IF;
+
+IF(placedCur[2] <> timeRTC[2]) THEN 
+	placedCur[2] := -1;
+ELSE
+	placedCur[2] := timeRTC[2];
+END_IF;
+
+IF(placedCur[1] <> timeRTC[1]) THEN 
+	placedCur[1] := -1;
+ELSE
+	placedCur[1] := timeRTC[1];
+END_IF;
+
+IF(placedCur[0] <> timeRTC[0]) THEN 
+	placedCur[0] := -1;
+ELSE
+	placedCur[0] := timeRTC[0];
 END_IF;
 ]]>
 					</sourceCode>
@@ -2618,7 +2655,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1702246460" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Push_SEQ" version="1.0.0" creationDate="1696631246" lastModifiedDate="1702335421" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="step0" type="StepperSEQ"/>
@@ -2634,6 +2671,7 @@ END_IF;
 							<var name="pushOffset" type="INT">
 								<initValue>150</initValue>
 							</var>
+							<var name="timechange1" type="TimeChange"/>
 						</localVars>
 						<localConsts>
 							<const name="pushClearanceX" type="INT">
@@ -3260,7 +3298,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="11" nextID="67" comment="" disabled="false" disableCondition="">
+							<network label="" id="11" nextID="81" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<and id="6">
@@ -3275,25 +3313,10 @@ END_IF;
 									</outputs>
 								</assignment>
 								<assignment fromTmpVar="8">
-									<input>
-										<operator name="MOVE" id="11">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL"/>
-												<pin name="0" neg="false" type="UNDEF">
-													<var name="cutDigit" id="12"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="placedCur[placeIndex]" id="13"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
+									<input/>
+									<outputs>
+										<tmpVar id="77"/>
+									</outputs>
 								</assignment>
 								<assignment fromTmpVar="8">
 									<input>
@@ -3326,25 +3349,7 @@ END_IF;
 									<input>
 										<operator name="ADD" id="24">
 											<inputs>
-												<pin name="EN" neg="false" type="BOOL">
-													<operator name="LT" id="54">
-														<inputs>
-															<pin name="EN" neg="false" type="BOOL"/>
-															<pin name="0" neg="false" type="">
-																<var name="pickIndex" id="65"/>
-															</pin>
-															<pin name="1" neg="false" type="">
-																<const name="9" id="66"/>
-															</pin>
-														</inputs>
-														<outputs>
-															<pin name="ENO" neg="false" type="BOOL"/>
-															<pin name="2" neg="false" type="BOOL">
-																<outputLine/>
-															</pin>
-														</outputs>
-													</operator>
-												</pin>
+												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="0" neg="false" type="UNDEF">
 													<const name="1" id="29"/>
 												</pin>
@@ -3364,19 +3369,62 @@ END_IF;
 									</input>
 									<outputs/>
 								</assignment>
-								<assignment fromTmpVar="8">
+								<assignment fromTmpVar="77">
 									<input>
-										<operator name="MOVE" id="50">
+										<operator name="MOVE" id="11">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+												<pin name="0" neg="false" type="UNDEF">
+													<var name="cutDigit" id="12"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="placedCur[placeIndex]" id="13"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+								<assignment fromTmpVar="77">
+									<input>
+										<funcBlock name="TimeChange" id="80" instance="timechange1">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL"/>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="12" nextID="74" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="71">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL">
-													<operator name="GT" id="60">
+													<operator name="GT" id="67">
 														<inputs>
-															<pin name="EN" neg="false" type="BOOL"/>
-															<pin name="0" neg="false" type="">
-																<var name="pickIndex" id="61"/>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="70">
+																	<contact name="auto" type="Normal" id="7"/>
+																	<contact name="pushSeq" type="Normal" id="5"/>
+																</and>
 															</pin>
-															<pin name="1" neg="false" type="">
-																<const name="8" id="64"/>
+															<pin name="0" neg="false" type="UNDEF">
+																<var name="pickIndex" id="68"/>
+															</pin>
+															<pin name="1" neg="false" type="UNDEF">
+																<const name="9" id="69"/>
 															</pin>
 														</inputs>
 														<outputs>
@@ -3388,7 +3436,7 @@ END_IF;
 													</operator>
 												</pin>
 												<pin name="0" neg="false" type="UNDEF">
-													<const name="0" id="53"/>
+													<const name="0" id="72"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -3396,7 +3444,7 @@ END_IF;
 													<outputLine/>
 												</pin>
 												<pin name="1" neg="false" type="UNDEF">
-													<var name="pickIndex" id="52"/>
+													<var name="pickIndex" id="73"/>
 												</pin>
 											</outputs>
 										</operator>
@@ -4418,7 +4466,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1702166924" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1702333413" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="step0" type="StepperSEQ"/>
@@ -4461,80 +4509,13 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="2" nextID="106" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<funcBlock name="StepperSEQ" id="96" instance="step0">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL">
-													<operator name="EQ" id="59">
-														<inputs>
-															<pin name="EN" neg="false" type="BOOL">
-																<and id="87">
-																	<contact name="auto" type="Normal" id="88"/>
-																	<contact name="engraveSeq" type="Normal" id="20"/>
-																</and>
-															</pin>
-															<pin name="0" neg="false" type="UNDEF">
-																<var name="curSeq" id="60"/>
-															</pin>
-															<pin name="1" neg="false" type="UNDEF">
-																<const name="10" id="63"/>
-															</pin>
-														</inputs>
-														<outputs>
-															<pin name="ENO" neg="false" type="BOOL"/>
-															<pin name="2" neg="false" type="BOOL">
-																<outputLine/>
-															</pin>
-														</outputs>
-													</operator>
-												</pin>
-												<pin name="XPOSIN" neg="false" type="INT">
-													<var name="cutBackX" id="97"/>
-												</pin>
-												<pin name="YPOSIN" neg="false" type="INT">
-													<const name="6000" id="98"/>
-												</pin>
-												<pin name="ZPOSIN" neg="false" type="INT">
-													<var name="ZTop" id="99"/>
-												</pin>
-												<pin name="XPOSACT" neg="false" type="INT">
-													<var name="XPosAct" id="100"/>
-												</pin>
-												<pin name="YPOSACT" neg="false" type="INT">
-													<var name="YPosAct" id="101"/>
-												</pin>
-												<pin name="ZPOSACT" neg="false" type="INT">
-													<var name="ZPosAct" id="102"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="XPOSOUT" neg="false" type="INT">
-													<var name="XPos" id="103"/>
-												</pin>
-												<pin name="YPOSOUT" neg="false" type="INT">
-													<var name="YPos" id="104"/>
-												</pin>
-												<pin name="ZPOSOUT" neg="false" type="INT">
-													<var name="ZPos" id="105"/>
-												</pin>
-											</outputs>
-										</funcBlock>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="3" nextID="56" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="64" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="EngraveX" id="48" instance="engX">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL">
-													<operator name="GT" id="41">
+													<operator name="GE" id="56">
 														<inputs>
 															<pin name="EN" neg="false" type="BOOL">
 																<and id="42">
@@ -4542,11 +4523,11 @@ END_IF;
 																	<contact name="engraveSeq" type="Normal" id="3"/>
 																</and>
 															</pin>
-															<pin name="0" neg="false" type="UNDEF">
-																<var name="curSeq" id="43"/>
+															<pin name="0" neg="false" type="">
+																<var name="curSeq" id="62"/>
 															</pin>
-															<pin name="1" neg="false" type="UNDEF">
-																<const name="10" id="46"/>
+															<pin name="1" neg="false" type="">
+																<const name="10" id="63"/>
 															</pin>
 														</inputs>
 														<outputs>
@@ -4589,7 +4570,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="38" comment="" disabled="false" disableCondition="">
+							<network label="" id="3" nextID="38" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="23">
@@ -4620,7 +4601,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="5" nextID="8" comment="" disabled="false" disableCondition="">
+							<network label="" id="4" nextID="8" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<and id="6">
@@ -11031,7 +11012,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="6278">
+			<root name="clock" nextID="6469">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
@@ -11049,6 +11030,7 @@ END_VAR
 				<Pou name="Engrave_SEQ" id="1903"/>
 				<Pou name="TimeGetter" id="2138"/>
 				<Pou name="EngraveX" id="5417"/>
+				<Pou name="TimeChange" id="6403"/>
 			</root>
 		</workspace>
 	</sources>
