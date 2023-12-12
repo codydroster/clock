@@ -957,7 +957,12 @@ END_IF;
 					</sourceCode>
 				</functionBlock>
 				<functionBlock name="TimeChange" version="1.0.0" creationDate="1702334046" lastModifiedDate="1702334201" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
-					<vars/>
+					<vars>
+						<externalVars>
+							<var name="placedCur" type="INT" dim0="4"/>
+							<var name="timeRTC" type="INT" dim0="4"/>
+						</externalVars>
+					</vars>
 					<iecDeclaration active="FALSE"/>
 					<interfaces/>
 					<methods/>
@@ -4466,10 +4471,9 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1702333413" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1702338188" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
-							<var name="step0" type="StepperSEQ"/>
 							<var name="engX" type="EngraveX"/>
 						</localVars>
 						<localConsts>
@@ -4509,13 +4513,41 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="2" nextID="64" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="16" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<operator name="MOVE" id="10">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="11">
+														<contact name="auto" type="Normal" id="0"/>
+														<contact name="engraveSeq" type="Positive" id="2"/>
+													</and>
+												</pin>
+												<pin name="0" neg="false" type="UNDEF">
+													<const name="20" id="15"/>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="14"/>
+												</pin>
+											</outputs>
+										</operator>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="3" nextID="71" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="EngraveX" id="48" instance="engX">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL">
-													<operator name="GE" id="56">
+													<operator name="GT" id="65">
 														<inputs>
 															<pin name="EN" neg="false" type="BOOL">
 																<and id="42">
@@ -4524,10 +4556,10 @@ END_IF;
 																</and>
 															</pin>
 															<pin name="0" neg="false" type="">
-																<var name="curSeq" id="62"/>
+																<var name="curSeq" id="70"/>
 															</pin>
 															<pin name="1" neg="false" type="">
-																<const name="10" id="63"/>
+																<const name="10" id="69"/>
 															</pin>
 														</inputs>
 														<outputs>
@@ -4570,7 +4602,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="3" nextID="38" comment="" disabled="false" disableCondition="">
+							<network label="" id="4" nextID="38" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="23">
@@ -4601,7 +4633,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="8" comment="" disabled="false" disableCondition="">
+							<network label="" id="5" nextID="8" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<and id="6">
@@ -11012,7 +11044,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="6469">
+			<root name="clock" nextID="6705">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
