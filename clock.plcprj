@@ -1008,7 +1008,7 @@ END_IF;
 				</functionBlock>
 			</functionBlocks>
 			<programs>
-				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1702246870" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="main" version="1.0.0" creationDate="1695602547" lastModifiedDate="1702421393" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="home_tim" type="TON"/>
@@ -3314,7 +3314,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1702384068" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1702421369" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="cnt0" type="CTD"/>
@@ -3332,42 +3332,14 @@ END_IF;
 								<initValue>1970</initValue>
 							</const>
 							<const name="cutSpeed" type="INT">
-								<initValue>6500</initValue>
+								<initValue>6000</initValue>
 							</const>
 						</localConsts>
 					</vars>
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
 						<LD2 version="1">
-							<network label="" id="1" nextID="15" comment="" disabled="false" disableCondition="">
-								<assignment fromTmpVar="">
-									<input>
-										<operator name="MOVE" id="10">
-											<inputs>
-												<pin name="EN" neg="false" type="BOOL">
-													<and id="11">
-														<contact name="auto" type="Normal" id="0"/>
-														<contact name="cutSeq" type="Positive" id="2"/>
-													</and>
-												</pin>
-												<pin name="0" neg="false" type="UNDEF">
-													<var name="timeRTC[placeIndex]" id="12"/>
-												</pin>
-											</inputs>
-											<outputs>
-												<pin name="ENO" neg="false" type="BOOL">
-													<outputLine/>
-												</pin>
-												<pin name="1" neg="false" type="UNDEF">
-													<var name="cutDigit" id="14"/>
-												</pin>
-											</outputs>
-										</operator>
-									</input>
-									<outputs/>
-								</assignment>
-							</network>
-							<network label="" id="2" nextID="80" comment="" disabled="false" disableCondition="">
+							<network label="" id="1" nextID="80" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="NE" id="75">
@@ -3479,7 +3451,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="3" nextID="80" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="80" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="75">
@@ -3591,7 +3563,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="125" comment="" disabled="false" disableCondition="">
+							<network label="" id="3" nextID="125" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="59">
@@ -3627,7 +3599,7 @@ END_IF;
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="XPOSIN" neg="false" type="INT">
-													<expression name="cutFrontX + 50" id="105"/>
+													<expression name="cutFrontX + 75" id="105"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
 													<expression name="cutPositionsY[pickIndex] - cutOffset" id="97"/>
@@ -3703,7 +3675,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="5" nextID="107" comment="" disabled="false" disableCondition="">
+							<network label="" id="4" nextID="107" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="96" instance="step1">
@@ -3770,7 +3742,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="6" nextID="107" comment="" disabled="false" disableCondition="">
+							<network label="" id="5" nextID="107" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="95" instance="step2">
@@ -3837,7 +3809,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="7" nextID="107" comment="" disabled="false" disableCondition="">
+							<network label="" id="6" nextID="107" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="StepperSEQ" id="95" instance="step3">
@@ -3904,7 +3876,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="8" nextID="132" comment="" disabled="false" disableCondition="">
+							<network label="" id="7" nextID="132" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="59">
@@ -3940,7 +3912,7 @@ END_IF;
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="XPOSIN" neg="false" type="INT">
-													<expression name="cutFrontX + 50" id="97"/>
+													<expression name="cutFrontX + 75" id="97"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
 													<expression name="cutPositionsY[pickIndex] - cutOffset" id="98"/>
@@ -4016,7 +3988,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="9" nextID="38" comment="" disabled="false" disableCondition="">
+							<network label="" id="8" nextID="38" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="23">
@@ -4047,7 +4019,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="10" nextID="26" comment="" disabled="false" disableCondition="">
+							<network label="" id="9" nextID="26" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<and id="18">
@@ -4326,10 +4298,11 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1702384211" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Engrave_SEQ" version="1.0.0" creationDate="1698189852" lastModifiedDate="1702418252" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="engX" type="EngraveX"/>
+							<var name="tget0" type="TimeGet"/>
 						</localVars>
 						<localConsts>
 							<const name="engOffset" type="INT">
@@ -4340,7 +4313,29 @@ END_IF;
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
 						<LD2 version="1">
-							<network label="" id="1" nextID="15" comment="" disabled="false" disableCondition="">
+							<network label="" id="1" nextID="17" comment="" disabled="false" disableCondition="">
+								<assignment fromTmpVar="">
+									<input>
+										<funcBlock name="TimeGet" id="15" instance="tget0">
+											<inputs>
+												<pin name="EN" neg="false" type="BOOL">
+													<and id="16">
+														<contact name="auto" type="Normal" id="0"/>
+														<contact name="engraveSeq" type="Positive" id="2"/>
+													</and>
+												</pin>
+											</inputs>
+											<outputs>
+												<pin name="ENO" neg="false" type="BOOL">
+													<outputLine/>
+												</pin>
+											</outputs>
+										</funcBlock>
+									</input>
+									<outputs/>
+								</assignment>
+							</network>
+							<network label="" id="2" nextID="15" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="MOVE" id="10">
@@ -4368,7 +4363,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="2" nextID="16" comment="" disabled="false" disableCondition="">
+							<network label="" id="3" nextID="16" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="MOVE" id="10">
@@ -4396,7 +4391,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="3" nextID="71" comment="" disabled="false" disableCondition="">
+							<network label="" id="4" nextID="71" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<funcBlock name="EngraveX" id="48" instance="engX">
@@ -4457,7 +4452,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="4" nextID="38" comment="" disabled="false" disableCondition="">
+							<network label="" id="5" nextID="38" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="23">
@@ -4488,7 +4483,7 @@ END_IF;
 									<outputs/>
 								</assignment>
 							</network>
-							<network label="" id="5" nextID="8" comment="" disabled="false" disableCondition="">
+							<network label="" id="6" nextID="8" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<and id="6">
@@ -4505,7 +4500,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="IndexA" version="1.0.0" creationDate="1702382775" lastModifiedDate="1702384198" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="IndexA" version="1.0.0" creationDate="1702382775" lastModifiedDate="1702418776" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="disableA" type="TON"/>
@@ -4515,16 +4510,34 @@ END_IF;
 					<iecDeclaration active="FALSE"/>
 					<sourceCode type="LD2">
 						<LD2 version="1">
-							<network label="" id="1" nextID="57" comment="" disabled="false" disableCondition="">
+							<network label="" id="1" nextID="63" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="51">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL">
-													<and id="52">
-														<contact name="auto" type="Normal" id="7"/>
-														<contact name="indexSeq" type="Normal" id="5"/>
-													</and>
+													<operator name="EQ" id="57">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="58">
+																	<contact name="auto" type="Normal" id="7"/>
+																	<contact name="indexSeq" type="Normal" id="5"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="">
+																<var name="pickIndex" id="59"/>
+															</pin>
+															<pin name="1" neg="false" type="">
+																<const name="0" id="62"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
 												</pin>
 												<pin name="0" neg="false" type="UNDEF">
 													<var name="curSeq" id="53"/>
@@ -4551,7 +4564,7 @@ END_IF;
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="0" neg="false" type="UNDEF">
-													<const name="3000" id="42"/>
+													<const name="1450" id="42"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -4573,21 +4586,39 @@ END_IF;
 									</outputs>
 								</assignment>
 							</network>
-							<network label="" id="2" nextID="57" comment="" disabled="false" disableCondition="">
+							<network label="" id="2" nextID="63" comment="" disabled="false" disableCondition="">
 								<assignment fromTmpVar="">
 									<input>
 										<operator name="EQ" id="51">
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL">
-													<and id="52">
-														<contact name="auto" type="Normal" id="7"/>
-														<contact name="indexSeq" type="Normal" id="5"/>
-													</and>
+													<operator name="EQ" id="57">
+														<inputs>
+															<pin name="EN" neg="false" type="BOOL">
+																<and id="58">
+																	<contact name="auto" type="Normal" id="7"/>
+																	<contact name="indexSeq" type="Normal" id="5"/>
+																</and>
+															</pin>
+															<pin name="0" neg="false" type="">
+																<var name="pickIndex" id="59"/>
+															</pin>
+															<pin name="1" neg="false" type="">
+																<const name="0" id="62"/>
+															</pin>
+														</inputs>
+														<outputs>
+															<pin name="ENO" neg="false" type="BOOL"/>
+															<pin name="2" neg="false" type="BOOL">
+																<outputLine/>
+															</pin>
+														</outputs>
+													</operator>
 												</pin>
-												<pin name="0" neg="false" type="">
+												<pin name="0" neg="false" type="UNDEF">
 													<var name="curSeq" id="53"/>
 												</pin>
-												<pin name="1" neg="false" type="">
+												<pin name="1" neg="false" type="UNDEF">
 													<const name="20" id="56"/>
 												</pin>
 											</inputs>
@@ -4609,7 +4640,7 @@ END_IF;
 											<inputs>
 												<pin name="EN" neg="false" type="BOOL"/>
 												<pin name="0" neg="false" type="UNDEF">
-													<const name="2980" id="42"/>
+													<const name="1440" id="42"/>
 												</pin>
 											</inputs>
 											<outputs>
@@ -11026,7 +11057,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="7101">
+			<root name="clock" nextID="7231">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>
