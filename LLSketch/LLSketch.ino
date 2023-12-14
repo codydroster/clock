@@ -34,7 +34,7 @@ struct PLCSharedVarsOutput_t
 PLCSharedVarsOutput_t& PLCOut = (PLCSharedVarsOutput_t&)m_PLCSharedVarsOutputBuf;
 
 
-AlPlc AxelPLC(1452498684);
+AlPlc AxelPLC(2120378239);
 
 // shared variables can be accessed with PLCIn.varname and PLCOut.varname
 
@@ -155,7 +155,7 @@ void loop()
     PLCIn.YPosAct = YPos;
     PLCIn.ZPosAct = ZPos;
 
-    PulseLow(currentMicros, );
+    PulseLowX(currentMicros);
     PulseLowY(currentMicros);
     PulseLowZ(currentMicros);
     PulseLowA(currentMicros);
@@ -502,7 +502,7 @@ bool ReadInputDebounce(int pin) {
 
 
 
-void PulseLow(unsigned long currentMicros) {
+void PulseLowX(unsigned long currentMicros) {
     if(currentMicros - previousMicrosX > 100) {
         digital_outputs.set(1, LOW);
 
@@ -529,6 +529,14 @@ void PulseLowA(unsigned long currentMicros) {
 
     }
 }
+
+
+
+
+
+
+
+
 
 
 
