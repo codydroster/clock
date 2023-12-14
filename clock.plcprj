@@ -353,7 +353,7 @@
 						</LD2>
 					</sourceCode>
 				</functionBlock>
-				<functionBlock name="EngraveX" version="1.0.0" creationDate="1702141782" lastModifiedDate="1702334786" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<functionBlock name="EngraveX" version="1.0.0" creationDate="1702141782" lastModifiedDate="1702513639" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<inputVars>
 							<var name="YPOS0" type="INT"/>
@@ -845,32 +845,32 @@ XPOSOUT := XPOS0 + 1430;
 YPOSOUT := YPOS0 + 1520;
 END_IF;
 
-IF (curSeq = 22) THEN
-XPOSOUT := XPOS0 + 1430;
-YPOSOUT := YPOS0 + 550;
-END_IF;
-
 IF (curSeq = 23) THEN
-XPOSOUT := XPOS0 + 1530;
+XPOSOUT := XPOS0 + 1430;
 YPOSOUT := YPOS0 + 550;
 END_IF;
 
 IF (curSeq = 24) THEN
 XPOSOUT := XPOS0 + 1530;
-YPOSOUT := YPOS0 + 1520;
+YPOSOUT := YPOS0 + 550;
 END_IF;
 
 IF (curSeq = 25) THEN
-XPOSOUT := XPOS0 + 2505;
+XPOSOUT := XPOS0 + 1530;
 YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 IF (curSeq = 26) THEN
 XPOSOUT := XPOS0 + 2505;
-YPOSOUT := YPOS0 + 450;
+YPOSOUT := YPOS0 + 1520;
 END_IF;
 
 IF (curSeq = 27) THEN
+XPOSOUT := XPOS0 + 2505;
+YPOSOUT := YPOS0 + 450;
+END_IF;
+
+IF (curSeq = 28) THEN
 XPOSOUT := XPOS0 + 550;
 YPOSOUT := YPOS0 + 450;
 END_IF;
@@ -882,7 +882,7 @@ END_IF;
 
 
 //End of engrave sequence looking for 100
-IF(curSeq > 27) THEN
+IF(curSeq > 28) THEN
 curSeq := 100;
 LASERPWM := 0.0;
 END_IF;
@@ -3314,7 +3314,7 @@ END_IF;
 						</LD2>
 					</sourceCode>
 				</program>
-				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1702507242" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
+				<program name="Cut_SEQ" version="1.0.0" creationDate="1696631258" lastModifiedDate="1702513833" excludeFromBuild="FALSE" excludeFromBuildIfNotDef="">
 					<vars>
 						<localVars>
 							<var name="cnt0" type="CTD"/>
@@ -3332,13 +3332,13 @@ END_IF;
 							<var name="step4" type="StepperSEQ"/>
 							<var name="step5" type="StepperSEQ"/>
 							<var name="step6" type="StepperSEQ"/>
+							<var name="cutSpeed" type="INT">
+								<initValue>2300</initValue>
+							</var>
 						</localVars>
 						<localConsts>
 							<const name="cutOffset" type="INT">
 								<initValue>1970</initValue>
-							</const>
-							<const name="cutSpeed" type="INT">
-								<initValue>6000</initValue>
 							</const>
 						</localConsts>
 					</vars>
@@ -3707,7 +3707,7 @@ END_IF;
 													<var name="cutBackX" id="137"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="cutPositionsY[pickIndex] + 25" id="138"/>
+													<expression name="cutPositionsY[pickIndex] + 50" id="138"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="ZTop" id="139"/>
@@ -3798,7 +3798,7 @@ END_IF;
 													<var name="cutBackX" id="146"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="cutPositionsY[pickIndex] + 25" id="97"/>
+													<expression name="cutPositionsY[pickIndex] + 50" id="97"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="ZTop" id="98"/>
@@ -4009,7 +4009,7 @@ END_IF;
 													<var name="cutBackX" id="137"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="cutPositionsY[pickIndex] + 25" id="138"/>
+													<expression name="cutPositionsY[pickIndex] + 50" id="138"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="ZTop" id="139"/>
@@ -4156,7 +4156,7 @@ END_IF;
 														</outputs>
 													</operator>
 												</pin>
-												<pin name="0" neg="false" type="">
+												<pin name="0" neg="false" type="UNDEF">
 													<const name="80" id="151"/>
 												</pin>
 											</inputs>
@@ -4164,8 +4164,8 @@ END_IF;
 												<pin name="ENO" neg="false" type="BOOL">
 													<outputLine/>
 												</pin>
-												<pin name="1" neg="false" type="">
-													<var name="pickIndex" id="150"/>
+												<pin name="1" neg="false" type="UNDEF">
+													<var name="curSeq" id="150"/>
 												</pin>
 											</outputs>
 										</operator>
@@ -4309,7 +4309,7 @@ END_IF;
 													<var name="cutBackX" id="146"/>
 												</pin>
 												<pin name="YPOSIN" neg="false" type="INT">
-													<expression name="cutPositionsY[pickIndex] + 25" id="97"/>
+													<expression name="cutPositionsY[pickIndex] + 50" id="97"/>
 												</pin>
 												<pin name="ZPOSIN" neg="false" type="INT">
 													<var name="ZTop" id="98"/>
@@ -11412,7 +11412,7 @@ END_VAR
 			</src>
 		</aux>
 		<workspace>
-			<root name="clock" nextID="7368">
+			<root name="clock" nextID="7505">
 				<GlobalVars name="Global_vars" id="2"/>
 				<Pou name="StepperSEQ" id="7"/>
 				<Pou name="main" id="26"/>

@@ -68,8 +68,8 @@
 0010	F0 22 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CA0
-0014	A0 2C 00 00 
+*		Code offset: 0x00002CA4
+0014	A4 2C 00 00 
 
 *
 *	2 REFERENCE(S) TO 8-BIT VAR AT BYTE #18 OF DATA BLOCK %Q4
@@ -80,8 +80,8 @@
 0024	88 1D 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x000050A8
-0028	A8 50 00 00 
+*		Code offset: 0x000050B8
+0028	B8 50 00 00 
 
 *
 *	5 REFERENCE(S) TO 16-BIT VAR AT BYTE #16 OF DATA BLOCK %Q4
@@ -92,20 +92,20 @@
 0038	84 1D 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CC4
-003C	C4 2C 00 00 
+*		Code offset: 0x00002CC8
+003C	C8 2C 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00003BA8
-0040	A8 3B 00 00 
+*		Code offset: 0x00003BAC
+0040	AC 3B 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x0000414C
-0044	4C 41 00 00 
+*		Code offset: 0x00004150
+0044	50 41 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004B1C
-0048	1C 4B 00 00 
+*		Code offset: 0x00004B20
+0048	20 4B 00 00 
 
 *
 *	1 REFERENCE(S) TO 16-BIT VAR AT BYTE #14 OF DATA BLOCK %Q4
@@ -128,20 +128,20 @@
 006C	08 23 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CC0
-0070	C0 2C 00 00 
+*		Code offset: 0x00002CC4
+0070	C4 2C 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00003BA4
-0074	A4 3B 00 00 
+*		Code offset: 0x00003BA8
+0074	A8 3B 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004148
-0078	48 41 00 00 
+*		Code offset: 0x0000414C
+0078	4C 41 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004B18
-007C	18 4B 00 00 
+*		Code offset: 0x00004B1C
+007C	1C 4B 00 00 
 
 *
 *	2 REFERENCE(S) TO 8-BIT VAR AT BYTE #2 OF DATA BLOCK %M3
@@ -152,8 +152,8 @@
 008C	64 1D 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004AFC
-0090	FC 4A 00 00 
+*		Code offset: 0x00004B00
+0090	00 4B 00 00 
 
 *
 *	5 REFERENCE(S) TO 16-BIT VAR AT BYTE #2 OF DATA BLOCK %I4
@@ -164,20 +164,20 @@
 00A0	00 23 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CAC
-00A4	AC 2C 00 00 
+*		Code offset: 0x00002CB0
+00A4	B0 2C 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00003B98
-00A8	98 3B 00 00 
+*		Code offset: 0x00003B9C
+00A8	9C 3B 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x0000413C
-00AC	3C 41 00 00 
+*		Code offset: 0x00004140
+00AC	40 41 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004B0C
-00B0	0C 4B 00 00 
+*		Code offset: 0x00004B10
+00B0	10 4B 00 00 
 
 *
 *	1 REFERENCE(S) TO 16-BIT VAR AT BYTE #6 OF DATA BLOCK %I4
@@ -200,20 +200,20 @@
 00D4	00 00 04 00 04 00 00 00 01 02 04 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CB0
-00E0	B0 2C 00 00 
+*		Code offset: 0x00002CB4
+00E0	B4 2C 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00003B9C
-00E4	9C 3B 00 00 
+*		Code offset: 0x00003BA0
+00E4	A0 3B 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004140
-00E8	40 41 00 00 
+*		Code offset: 0x00004144
+00E8	44 41 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004B10
-00EC	10 4B 00 00 
+*		Code offset: 0x00004B14
+00EC	14 4B 00 00 
 
 *
 *	2 REFERENCE(S) TO 16-BIT VAR AT BYTE #8 OF DATA BLOCK %Q4
@@ -224,8 +224,8 @@
 00FC	78 1D 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CBC
-0100	BC 2C 00 00 
+*		Code offset: 0x00002CC0
+0100	C0 2C 00 00 
 
 *
 *	1 REFERENCE(S) TO 16-BIT VAR AT BYTE #8 OF DATA BLOCK %I4
@@ -248,28 +248,28 @@
 0124	04 23 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CB8
-0128	B8 2C 00 00 
+*		Code offset: 0x00002CBC
+0128	BC 2C 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00003BA0
-012C	A0 3B 00 00 
+*		Code offset: 0x00003BA4
+012C	A4 3B 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004144
-0130	44 41 00 00 
+*		Code offset: 0x00004148
+0130	48 41 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004B14
-0134	14 4B 00 00 
+*		Code offset: 0x00004B18
+0134	18 4B 00 00 
 
 *
 *	1 REFERENCE(S) TO 8-BIT VAR AT BYTE #1 OF DATA BLOCK %M3
 0138	00 00 03 00 01 00 00 00 00 01 01 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004EC8
-0144	C8 4E 00 00 
+*		Code offset: 0x00004ECC
+0144	CC 4E 00 00 
 
 *
 *	2 REFERENCE(S) TO 16-BIT VAR AT BYTE #24 OF DATA BLOCK %Q4
@@ -280,8 +280,8 @@
 0154	90 1D 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004ED0
-0158	D0 4E 00 00 
+*		Code offset: 0x00004ED4
+0158	D4 4E 00 00 
 
 *
 *	1 REFERENCE(S) TO 16-BIT VAR AT BYTE #22 OF DATA BLOCK %Q4
@@ -300,8 +300,8 @@
 0178	70 1D 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CB4
-017C	B4 2C 00 00 
+*		Code offset: 0x00002CB8
+017C	B8 2C 00 00 
 
 *
 *	5 REFERENCE(S) TO 16-BIT VAR AT BYTE #0 OF DATA BLOCK %I4
@@ -312,20 +312,20 @@
 018C	FC 22 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00002CA8
-0190	A8 2C 00 00 
+*		Code offset: 0x00002CAC
+0190	AC 2C 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00003B94
-0194	94 3B 00 00 
+*		Code offset: 0x00003B98
+0194	98 3B 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004138
-0198	38 41 00 00 
+*		Code offset: 0x0000413C
+0198	3C 41 00 00 
 
 *		Instruction type: 0x00
-*		Code offset: 0x00004B08
-019C	08 4B 00 00 
+*		Code offset: 0x00004B0C
+019C	0C 4B 00 00 
 
 
 ***************************************************
@@ -333,25 +333,25 @@
 ***************************************************
 
 NAME: sysCfgAO  - NUM: 1
-	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052E4
-
-NAME: sysDBase_SetExtTable  - NUM: 1
-	 Patch - TYPE: 0x0 - CODE OFFSET: 0x00005060
-
-NAME: sysCfgProgDIO  - NUM: 1
-	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052EC
-
-NAME: sysCfgProgDIOs  - NUM: 1
-	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052E8
-
-NAME: sysCfgTempProbe  - NUM: 1
 	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052F4
 
+NAME: sysDBase_SetExtTable  - NUM: 1
+	 Patch - TYPE: 0x0 - CODE OFFSET: 0x00005070
+
+NAME: sysCfgProgDIO  - NUM: 1
+	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052FC
+
+NAME: sysCfgProgDIOs  - NUM: 1
+	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052F8
+
+NAME: sysCfgTempProbe  - NUM: 1
+	 Patch - TYPE: 0x0 - CODE OFFSET: 0x00005304
+
 NAME: sysCfgTempProbes  - NUM: 1
-	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052F0
+	 Patch - TYPE: 0x0 - CODE OFFSET: 0x00005300
 
 NAME: sysCfgDOs  - NUM: 1
-	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052DC
+	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052EC
 
 NAME: sysCfgAIs  - NUM: 1
-	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052E0
+	 Patch - TYPE: 0x0 - CODE OFFSET: 0x000052F0
