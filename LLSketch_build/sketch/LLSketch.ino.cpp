@@ -36,7 +36,7 @@ struct PLCSharedVarsOutput_t
 PLCSharedVarsOutput_t& PLCOut = (PLCSharedVarsOutput_t&)m_PLCSharedVarsOutputBuf;
 
 
-AlPlc AxelPLC(1657920167);
+AlPlc AxelPLC(-401541491);
 
 // shared variables can be accessed with PLCIn.varname and PLCOut.varname
 
@@ -100,29 +100,31 @@ void loop();
 void callback_alarm();
 #line 173 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeX();
-#line 236 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 235 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeY();
-#line 295 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 294 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeZ();
-#line 361 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 360 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosX(unsigned long currentMicros);
-#line 407 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 406 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosY(unsigned long currentMicros);
-#line 447 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 446 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosZ(unsigned long currentMicros);
-#line 487 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 486 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MoveA(unsigned long currentMicros);
-#line 514 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 513 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MoveSlow(int pul);
-#line 521 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 520 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MoveFast(int pul);
-#line 531 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 527 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+bool readInputWithDebounce(int pin);
+#line 536 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowX(unsigned long currentMicros);
-#line 538 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 543 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowY(unsigned long currentMicros);
-#line 545 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 550 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowZ(unsigned long currentMicros);
-#line 552 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 557 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowA(unsigned long currentMicros);
 #line 93 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void setup()
@@ -207,13 +209,13 @@ void callback_alarm() {
 
 void HomeX() {
 
- 
+    
     if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
         delay(2);
         if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
             delay(2);
             if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
-                //get away from home prox before homing sequence. Use delay since we're in a loop.
+                //get away from home prox before homing sequence.
                 //Positive Dir
                  for(int i = 0; i < awayFromHomeShort; i++) {
                     digital_outputs.set(XDIR_PIN, LOW);
@@ -232,16 +234,15 @@ void HomeX() {
 
     
     //debounce?
-    if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-        delay(2);
-        if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-            delay(2);
-            if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+    
+
                 //Move towards home, negative
-                while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+                while(!readInputWithDebounce(DIN_READ_CH_PIN_00)) {
                     digital_outputs.set(XDIR_PIN, HIGH);
                     MoveFast(XPUL_PIN);
                 }
+
+                
                 //Move away from home, positive
                 for(int i = 0; i < awayFromHomeShort; i++) {
                     digital_outputs.set(XDIR_PIN, LOW);
@@ -254,9 +255,9 @@ void HomeX() {
                 }
                 XPos = 0;
        
-    }
-    }
-}
+    
+    
+
             //Clearance
         while(XPos < 1000) {
             digital_outputs.set(XDIR_PIN, LOW);
@@ -560,6 +561,12 @@ void MoveFast(int pul) {
     delayMicroseconds(homingSpdFast);
 }
 
+bool readInputWithDebounce(int pin) {
+    bool firstRead = digital_inputs.read(pin);
+    delay(2); // Wait for the specified debounce delay
+    bool secondRead = digital_inputs.read(pin);
+    return (firstRead && secondRead); // Return true only if both readings are true
+}
 
 
 

@@ -35,7 +35,7 @@ struct PLCSharedVarsOutput_t
 PLCSharedVarsOutput_t& PLCOut = (PLCSharedVarsOutput_t&)m_PLCSharedVarsOutputBuf;
 
 
-AlPlc AxelPLC(1657920167);
+AlPlc AxelPLC(-401541491);
 
 // shared variables can be accessed with PLCIn.varname and PLCOut.varname
 
@@ -179,7 +179,7 @@ void HomeX() {
         if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
             delay(2);
             if(digital_inputs.read(DIN_READ_CH_PIN_00) == true) {
-                //get away from home prox before homing sequence. Use delay since we're in a loop.
+                //get away from home prox before homing sequence.
                 //Positive Dir
                  for(int i = 0; i < awayFromHomeShort; i++) {
                     digital_outputs.set(0, LOW);
@@ -198,16 +198,15 @@ void HomeX() {
 
 
     //debounce?
-    if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-        delay(2);
-        if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
-            delay(2);
-            if(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+
+
                 //Move towards home, negative
-                while(digital_inputs.read(DIN_READ_CH_PIN_00) != true) {
+                while(!readInputWithDebounce(DIN_READ_CH_PIN_00)) {
                     digital_outputs.set(0, HIGH);
                     MoveFast(1);
                 }
+
+
                 //Move away from home, positive
                 for(int i = 0; i < awayFromHomeShort; i++) {
                     digital_outputs.set(0, LOW);
@@ -220,9 +219,9 @@ void HomeX() {
                 }
                 XPos = 0;
 
-    }
-    }
-}
+
+
+
             //Clearance
         while(XPos < 1000) {
             digital_outputs.set(0, LOW);
@@ -526,6 +525,12 @@ void MoveFast(int pul) {
     delayMicroseconds(homingSpdFast);
 }
 
+bool readInputWithDebounce(int pin) {
+    bool firstRead = digital_inputs.read(pin);
+    delay(2); // Wait for the specified debounce delay
+    bool secondRead = digital_inputs.read(pin);
+    return (firstRead && secondRead); // Return true only if both readings are true
+}
 
 
 
