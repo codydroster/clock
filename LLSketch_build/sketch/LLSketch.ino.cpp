@@ -14,6 +14,9 @@ struct PLCSharedVarsInput_t
 	int16_t hour;
 	int16_t minute;
 	int16_t second;
+	bool XHomeDN;
+	bool YHomeDN;
+	bool ZHomeDN;
 };
 PLCSharedVarsInput_t& PLCIn = (PLCSharedVarsInput_t&)m_PLCSharedVarsInputBuf;
 
@@ -28,15 +31,21 @@ struct PLCSharedVarsOutput_t
 	bool ZDir;
 	int16_t ZSpeed;
 	int16_t ZPos;
-	bool Home;
+	bool XHome;
 	int16_t ADir;
 	int16_t ASpeed;
 	int16_t APos;
+	bool YHome;
+	bool ZHome;
 };
 PLCSharedVarsOutput_t& PLCOut = (PLCSharedVarsOutput_t&)m_PLCSharedVarsOutputBuf;
 
 
-AlPlc AxelPLC(2120378239);
+AlPlc AxelPLC(-228159654);
+
+// shared variables can be accessed with PLCIn.varname and PLCOut.varname
+
+#include <Arduino_MachineControl.h>
 
 // shared variables can be accessed with PLCIn.varname and PLCOut.varname
 
@@ -81,10 +90,10 @@ int accelZ = 1500;
 
 int accelDistXY = 500;
 
-int XPos;
-int YPos;
-int ZPos;
-int APos;
+int XPos = 0;
+int YPos = 0;
+int ZPos = 0;
+int APos = 0;
 
 //not implemented
 int XMax = 100;
@@ -93,39 +102,39 @@ int ZMax = 100;
 bool homed = 0;
 
 
-#line 94 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 103 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void setup();
-#line 112 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 121 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void loop();
-#line 169 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 188 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void callback_alarm();
-#line 174 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 193 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeX();
-#line 227 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 247 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeY();
-#line 280 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 300 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void HomeZ();
-#line 334 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 354 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosX(unsigned long currentMicros);
-#line 380 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 400 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosY(unsigned long currentMicros);
-#line 420 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 440 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MovePosZ(unsigned long currentMicros);
-#line 460 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 480 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MoveA(unsigned long currentMicros);
-#line 487 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 507 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void MoveAtSpeed(int pul, int speed);
-#line 496 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 516 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 bool ReadInputDebounce(int pin);
-#line 505 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 525 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowX(unsigned long currentMicros);
-#line 512 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 532 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowY(unsigned long currentMicros);
-#line 519 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 539 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowZ(unsigned long currentMicros);
-#line 526 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 546 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void PulseLowA(unsigned long currentMicros);
-#line 94 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+#line 103 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
 void setup()
 {
     //digital_outputs.setRetry();
@@ -164,25 +173,35 @@ void loop()
     unsigned long currentMicros = micros();
     
     //regular move
-    if(PLCOut.Home != true) {
+    if(PLCOut.XHome != true) { 
+        MovePosX(currentMicros);
+    }
     
-        
-    MovePosX(currentMicros);
-    MovePosY(currentMicros);
-    MovePosZ(currentMicros);
+    if(PLCOut.YHome != true) {
+        MovePosY(currentMicros);
+    }
+
+    if(PLCOut.ZHome != true) {
+        MovePosZ(currentMicros);
+    }
+    
     MoveA(currentMicros);
     
-    }
+    
     //homing
-    if(PLCOut.Home == true) {
-
-        
-        //Z home
+    if(PLCOut.ZHome) {
+        PLCIn.ZHomeDN = 0;
         HomeZ();
-        //X home
+    }
+        //X home        
+    if(PLCOut.XHome) {
+        PLCIn.XHomeDN = 0;
         HomeX();
+    }
         //Y home
-        HomeY();        
+    if(PLCOut.YHome) {
+        PLCIn.YHomeDN = 0;
+        HomeY();       
         
     }
         
@@ -254,6 +273,7 @@ void HomeX() {
             XPos++;
 
         }
+        PLCIn.XHomeDN = 1;
 
 }
 
@@ -564,14 +584,6 @@ void PulseLowA(unsigned long currentMicros) {
 
     }
 }
-
-
-
-
-
-
-
-
 
 
 

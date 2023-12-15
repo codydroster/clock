@@ -13,6 +13,9 @@ struct PLCSharedVarsInput_t
  int16_t hour;
  int16_t minute;
  int16_t second;
+ bool XHomeDN;
+ bool YHomeDN;
+ bool ZHomeDN;
 };
 PLCSharedVarsInput_t& PLCIn = (PLCSharedVarsInput_t&)m_PLCSharedVarsInputBuf;
 
@@ -27,15 +30,21 @@ struct PLCSharedVarsOutput_t
  bool ZDir;
  int16_t ZSpeed;
  int16_t ZPos;
- bool Home;
+ bool XHome;
  int16_t ADir;
  int16_t ASpeed;
  int16_t APos;
+ bool YHome;
+ bool ZHome;
 };
 PLCSharedVarsOutput_t& PLCOut = (PLCSharedVarsOutput_t&)m_PLCSharedVarsOutputBuf;
 
 
-AlPlc AxelPLC(2120378239);
+AlPlc AxelPLC(-228159654);
+
+// shared variables can be accessed with PLCIn.varname and PLCOut.varname
+
+
 
 // shared variables can be accessed with PLCIn.varname and PLCOut.varname
 
@@ -80,10 +89,10 @@ int accelZ = 1500;
 
 int accelDistXY = 500;
 
-int XPos;
-int YPos;
-int ZPos;
-int APos;
+int XPos = 0;
+int YPos = 0;
+int ZPos = 0;
+int APos = 0;
 
 //not implemented
 int XMax = 100;
@@ -130,24 +139,34 @@ void loop()
     unsigned long currentMicros = micros();
 
     //regular move
-    if(PLCOut.Home != true) {
+    if(PLCOut.XHome != true) {
+        MovePosX(currentMicros);
+    }
 
+    if(PLCOut.YHome != true) {
+        MovePosY(currentMicros);
+    }
 
-    MovePosX(currentMicros);
-    MovePosY(currentMicros);
-    MovePosZ(currentMicros);
+    if(PLCOut.ZHome != true) {
+        MovePosZ(currentMicros);
+    }
+
     MoveA(currentMicros);
 
-    }
+
     //homing
-    if(PLCOut.Home == true) {
-
-
-        //Z home
+    if(PLCOut.ZHome) {
+        PLCIn.ZHomeDN = 0;
         HomeZ();
-        //X home
+    }
+        //X home        
+    if(PLCOut.XHome) {
+        PLCIn.XHomeDN = 0;
         HomeX();
+    }
         //Y home
+    if(PLCOut.YHome) {
+        PLCIn.YHomeDN = 0;
         HomeY();
 
     }
@@ -220,6 +239,7 @@ void HomeX() {
             XPos++;
 
         }
+        PLCIn.XHomeDN = 1;
 
 }
 
@@ -530,5 +550,7 @@ void PulseLowA(unsigned long currentMicros) {
 
     }
 }
-# 543 "C:\\Users\\cdros\\Developer\\Arduino\\Projects\\clock\\LLSketch\\LLSketch.ino"
+
+
+
 //
